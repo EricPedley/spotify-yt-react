@@ -23,7 +23,7 @@ export default function SpotifyHalf() {
     const [state, setState] = useState("noAuth");
     return (
         <div className="col-md-6 half" id="spotify-half">
-            {state === "noAuth" && LoginButtons(state)}
+            {state === "noAuth" && <LoginButtons setState ={setState}/>}
         </div>
     );
 }
