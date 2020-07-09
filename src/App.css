@@ -1,38 +1,140 @@
-.App {
-  text-align: center;
+#logo {
+  max-height:100px;
+  float:right;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.big-link {
+  display:inline-block;
+  padding:10px;
+  padding-bottom:5px;
+  border-radius:10px;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.small-link {
+  border-radius:5px;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+a:hover.spotify-colors {
+  color:#FFFFFF;
 }
-
-.App-link {
-  color: #61dafb;
+a:hover.youtube-colors {
+  color:#121212;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#spotify-login {
+  margin-top:30%;
+}
+.logout-button {
+  float:right;
+  padding: 5px 10px 5px;
+}
+.spotify-colors {
+  background-color:#1ed760;
+  color:#121212;
+}
+.youtube-colors {
+  background-color:#FF0000;
+  color:#FFFFFF;
+}
+#spotify-loggedin {
+  text-align:left;
+}
+#youtube-login {
+  margin-top:30%;
+}
+.pressable {
+  border:none;
+  cursor:pointer;
+  text-align:left;
+}
+.pressable:hover {
+  text-decoration:underline;
+}
+#youtube-loggedin {
+  text-align:left;
+}
+.half {
+  height:85vh;
+  text-align:center;
+  overflow:auto;
+  padding-top:10px;
+}
+#spotify-half {
+  border-right-style:solid;
+  border-right-color:#121212;
+  border-right-width:2px;
+  margin-top:10px;
+  margin-bottom:10px;
+}
+.header {
+  background-color:#121212;
+}
+body {
+  background-color:#272727;
+  color:white;
+}
+.playlist-button {
+  background-color:transparent;
+  border:none;
+  color:white;
+}
+#convert-button {
+  background-color:#FFFFFF;
+  color:#121212;
+  font-size:1.5em;
+  animation: pulse 3s linear infinite;
+}
+#popup {
+  display:none;
+  position:fixed;
+  padding-top:10px;
+  top:30%;
+  left:50%;
+  margin-left:-20vw;
+  width:40vw;
+  height:50vh;
+  background-color:#121212;
+  text-align:center;
+  border-radius:20px;
+  overflow-y:auto;
+}
+.popup-dismiss {
+  position:relative;
+  top:1em;
+  padding: 5px 10px 5px;
+  border-radius:10px;
+  background-color:#FFFFFF;
+}
+.loggedin-message {
+  display:inline-block;
+  margin-bottom:0.5em;
+} 
+@keyframes pulse {  
+  50% { opacity: 30%; }
+}
+#info {
+  padding-top:20px;
+  height:60vh;
+}
+#bottom-section {
+  background-color:#121212;
+}
+#github-link {
+  color:#121212;
+  background-color:#FFFFFF;
+  padding:0px 2px;
+  margin:0px 2px 0px 1px;
+}
+#remaining {
+  width:100%;
+}
+#spotify-import {
+  width:80%;
+  background-color:#121212;
+  border-color:#1ed760;
+  color:white;
+  height:100%;
+  border-radius:5px;
+}
+#import-holder {
+  height:70%;
+}
+#import-submit {
+  
 }
