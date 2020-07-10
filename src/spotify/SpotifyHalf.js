@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 
 const playlistContext = React.createContext([]);
 export default function SpotifyHalf() {
@@ -6,15 +6,16 @@ export default function SpotifyHalf() {
     return (
         <div className="col-md-6 half" id="spotify-half">
             {state === "noAuth" && <LoginButtons setParentState={setState} />}
-            {state === "importField" && <ImportField setParentState={setState} />}
+            {state === "ImportControls" && <ImportControls setParentState={setState} />}
             {state === "playlistList" && <PlaylistList playlists={[{ name: "track one", id: 1 }, { name: "track two", id: 2 }, { name: "track three", id: 3 }]} setParentState={setState} />}
+            {state === "Playlist" && <Playlist setParentState={setState} />}
         </div>
     );
 }
 
 function LoginButtons(props) {
     function showImportScreen() {
-        props.setParentState("importField");
+        props.setParentState("ImportControls");
     }
     return (
         <>
@@ -31,15 +32,17 @@ function LoginButtons(props) {
         </>
     )
 }
-function ImportField(props) {
+function ImportControls(props) {
     function submitJSON() {
         props.setParentState("playlistList");
     }
     return (
         <>
             <h3>Enter JSON Text Here:</h3>
-            <code><textarea wrap="soft" id="spotify-import"></textarea></code>
-            <button class="pressable small-link" id="import-submit" onClick={submitJSON}><h4>Import Playlist</h4></button>
+            <form>
+            <code><textarea wrap="soft"  onChange={(event)=>{console.log(event)}} id="spotify-import"></textarea></code>
+            <input type="submit" className="pressable small-link" id="import-submit" onClick={submitJSON} value="Import Playlist"></input>
+            </form>
         </>
     )
 }
@@ -51,12 +54,13 @@ function PlaylistList(props) {
     return (
         <div id="playlist-list">
             <h2 style={{ paddingLeft: "6px" }}>{state===""?"Select a Playlist":`Playlist Selected: ${props.playlists.find((playlist)=>(state===playlist.id)).name}`}</h2>
-            {props.playlists.map((playlist) => (<>
-                <button class={"pressable small-link playlist-button" + (playlist.id === state ? "-selected" : "")} onClick={() => { selectPlaylist(playlist.id) }}>{playlist.name}</button>
-                <br></br>
-            </>))}
+            {props.playlists.map((playlist) => (
+                <button key = {playlist.id} className={"pressable small-link playlist-button" + (playlist.id === state ? "-selected" : "")} onClick={() => { selectPlaylist(playlist.id) }}>{playlist.name}</button>
+            ))}
         </div>
     )
 }
 
-function PlaylistView()
+function Playlist() {
+
+}
