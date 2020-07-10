@@ -14,6 +14,10 @@ function App() {
             <SpotifyHalf/>
             <YoutubeHalf/>
         </div>
+        <div className="row">
+        <div className="col-md-6" style = {{backgroundColor:"#1ed760",height:"10px"}}></div>
+        <div className="col-md-6" style = {{backgroundColor:"#FF0000",height:"10px"}}></div>
+        </div>
         <div id="popup"></div>
     </div>
     <Footer/>

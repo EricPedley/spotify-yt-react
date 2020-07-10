@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 
 function Header() {
-    const [instructions,setInstructions] = useState("Log in to select playlists");
+    const [instructions,] = useState("Log in to select playlists");
     return (
         <div className="header">
         <div className="container">

@@ -32,7 +32,7 @@ a:hover.youtube-colors {
   background-color:#FF0000;
   color:#FFFFFF;
 }
-#spotify-loggedin {
+#playlist-list {
   text-align:left;
 }
 #youtube-login {
@@ -56,11 +56,14 @@ a:hover.youtube-colors {
   padding-top:10px;
 }
 #spotify-half {
-  border-right-style:solid;
-  border-right-color:#121212;
-  border-right-width:2px;
+  border-right: solid 1px #121212;
   margin-top:10px;
-  margin-bottom:10px;
+  padding-bottom:10px;
+}
+#youtube-half {
+  border-left: solid 1px #121212;
+  margin-top:10px;
+  padding-bottom:10px;
 }
 .header {
   background-color:#121212;
@@ -71,8 +74,11 @@ body {
 }
 .playlist-button {
   background-color:transparent;
-  border:none;
   color:white;
+}
+.playlist-button-selected {
+  background-color:#1ed760;
+  color:#121212;
 }
 #convert-button {
   background-color:#FFFFFF;
@@ -127,14 +133,10 @@ body {
 #spotify-import {
   width:80%;
   background-color:#121212;
-  border-color:#1ed760;
-  color:white;
-  height:100%;
+  border:none;
+  color:#FFFFFF;
+  height: calc(100% - 2.17em - 144px);
+  min-height:200px;
   border-radius:5px;
-}
-#import-holder {
-  height:70%;
-}
-#import-submit {
-  
+  margin-bottom:8px;
 }
