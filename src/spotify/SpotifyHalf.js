@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, {useState, useContext} from "react";
+import PlaylistContext from "../PlaylistContext";
 
 export default function SpotifyHalf() {
     const [state, setState] = useState("noAuth");
@@ -16,12 +17,14 @@ function LoginButtons(props) {
     function showImportScreen() {
         props.setParentState("ImportControls");
     }
+    function openStuff() {
+        window.location="spotify-login";
+    }
     return (
         <>
-            <a href="/spotify-login" id="spotify-login" className="big-link spotify-colors">
+            <a href="/spotify-login" id="spotify-login" onClick={openStuff} className="big-link spotify-colors">
                 <h3>Log in with Spotify</h3>
             </a>
-            <div id="spotify-loggedin"></div>
             <br></br>
             <br></br>
             <button id="import-button" onClick={showImportScreen} className="pressable big-link">
@@ -31,18 +34,20 @@ function LoginButtons(props) {
         </>
     )
 }
+
 function ImportControls(props) {
     const [state, setState] = useState("");
+    const [playlist, setPlaylist] = useContext(PlaylistContext);
     function submitJSON() {
         console.log(state);
-        props.setParentState("playlistList");
+        props.setParentState("Playlist");
     }
     return (
         <>
             <h3>Enter JSON Text Here:</h3>
             <form>
-            <code><textarea wrap="soft"  onChange={(event)=>{setState(event.target.value)}} id="spotify-import" value={state}></textarea></code>
-            <input type="submit" className="pressable small-link" id="import-submit" onClick={submitJSON} value="Import Playlist"></input>
+                <code><textarea wrap="soft" onChange={(event) => { setState(event.target.value) }} id="spotify-import" value={state}></textarea></code>
+                <input type="submit" className="pressable small-link" id="import-submit" onClick={() => { setPlaylist(JSON.parse(state)); submitJSON() }} value="Import Playlist"></input>
             </form>
         </>
     )
@@ -54,14 +59,20 @@ function PlaylistList(props) {
     }
     return (
         <div id="playlist-list">
-            <h2 style={{ paddingLeft: "6px" }}>{state===""?"Select a Playlist":`Playlist Selected: ${props.playlists.find((playlist)=>(state===playlist.id)).name}`}</h2>
+            <h2 style={{ paddingLeft: "6px" }}>{state === "" ? "Select a Playlist" : `Playlist Selected: ${props.playlists.find((playlist) => (state === playlist.id)).name}`}</h2>
             {props.playlists.map((playlist) => (
-                <button key = {playlist.id} className={"pressable small-link playlist-button" + (playlist.id === state ? "-selected" : "")} onClick={() => { selectPlaylist(playlist.id) }}>{playlist.name}</button>
+                <button key={playlist.id} className={"pressable small-link playlist-button" + (playlist.id === state ? "-selected" : "")} onClick={() => { selectPlaylist(playlist.id) }}>{playlist.name}</button>
             ))}
         </div>
     )
 }
 
 function Playlist() {
-
+    const [playlist,] = useContext(PlaylistContext);
+    return (
+            <>
+            <h1>Playlist Chosen:</h1>
+            {playlist.map((track)=><h4>{track}</h4>)}
+            </>
+    )
 }

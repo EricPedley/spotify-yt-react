@@ -1,18 +1,19 @@
-import React from 'react';
+import React,{useState} from 'react';
 import './App.css';
 import Header from "./Header";
 import Footer from "./Footer";
 import SpotifyHalf from "./spotify/SpotifyHalf";
 import YoutubeHalf from "./youtube/YoutubeHalf";
+import PlaylistContext from "./PlaylistContext";
 
-const PlaylistContext = React.createContext({spotify:["track one","track two"]});
-function App() {
+export default function App() {
+  const [state, setState] = useState()
   return (
     <>
       <Header />
       <div className="container-fluid">
         <div className="row align-items-center" id="main">
-          <PlaylistContext.Provider>
+          <PlaylistContext.Provider value = {[state,setState]}>
             <SpotifyHalf />
             <YoutubeHalf />
           </PlaylistContext.Provider>
@@ -28,4 +29,3 @@ function App() {
   );
 }
 
-export default App;
