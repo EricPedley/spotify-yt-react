@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-const playlistContext = React.createContext([]);
 export default function SpotifyHalf() {
     const [state, setState] = useState("noAuth");
     return (
@@ -33,14 +32,16 @@ function LoginButtons(props) {
     )
 }
 function ImportControls(props) {
+    const [state, setState] = useState("");
     function submitJSON() {
+        console.log(state);
         props.setParentState("playlistList");
     }
     return (
         <>
             <h3>Enter JSON Text Here:</h3>
             <form>
-            <code><textarea wrap="soft"  onChange={(event)=>{console.log(event)}} id="spotify-import"></textarea></code>
+            <code><textarea wrap="soft"  onChange={(event)=>{setState(event.target.value)}} id="spotify-import" value={state}></textarea></code>
             <input type="submit" className="pressable small-link" id="import-submit" onClick={submitJSON} value="Import Playlist"></input>
             </form>
         </>
