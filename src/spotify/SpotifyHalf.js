@@ -1,13 +1,36 @@
-import React, {useState, useContext} from "react";
+import React, { useState, useContext } from "react";
 import PlaylistContext from "../PlaylistContext";
 
+async function getPlaylists(access_token) {
+    let options = {
+        headers: {
+            'Authorization': 'Bearer ' + access_token
+        }
+    }
+    let user = await fetch("https://api.spotify.com/v1/me",options).then(res=>res.json()).catch((err)=>{console.log(err)});
+    let playlists = await fetch( `https://api.spotify.com/v1/users/${user.id}/playlists`,options).then(res=>res.json()).catch((err)=>{console.log(err)});
+    let returnval = {playlists:playlists.items,userName:user.display_name}
+    console.log(returnval);
+    return user;
+}
+
 export default function SpotifyHalf() {
-    const [state, setState] = useState("noAuth");
+    let spotify_access_token = document.cookie.split(";").find((row) => row.startsWith("spotify_access_token"));
+    let spotify_authenticated = false;
+    if (spotify_access_token) {
+        spotify_access_token = spotify_access_token.substring(21);
+        spotify_authenticated = true;
+    }
+    console.log(spotify_access_token);
+    const pres = getPlaylists(spotify_access_token);
+    console.log(pres);
+    const {playlists,userName} = pres;
+    const [state, setState] = useState(spotify_authenticated?"playlistList":"noAuth");
     return (
         <div className="col-md-6 half" id="spotify-half">
             {state === "noAuth" && <LoginButtons setParentState={setState} />}
             {state === "ImportControls" && <ImportControls setParentState={setState} />}
-            {state === "playlistList" && <PlaylistList playlists={[{ name: "track one", id: 1 }, { name: "track two", id: 2 }, { name: "track three", id: 3 }]} setParentState={setState} />}
+            {state === "playlistList" && <PlaylistList userName = {userName||"no username"} playlists={playlists||[{ name: "track one", id: 1 }, { name: "track two", id: 2 }, { name: "track three", id: 3 }]} setParentState={setState} />}
             {state === "Playlist" && <Playlist setParentState={setState} />}
         </div>
     );
@@ -17,12 +40,9 @@ function LoginButtons(props) {
     function showImportScreen() {
         props.setParentState("ImportControls");
     }
-    function openStuff() {
-        window.location="spotify-login";
-    }
     return (
         <>
-            <a href="/spotify-login" id="spotify-login" onClick={openStuff} className="big-link spotify-colors">
+            <a href="http://localhost:8888/spotify-login" id="spotify-login" className="big-link spotify-colors">
                 <h3>Log in with Spotify</h3>
             </a>
             <br></br>
@@ -59,6 +79,7 @@ function PlaylistList(props) {
     }
     return (
         <div id="playlist-list">
+            <h1>Logged in as {props.userName}</h1>
             <h2 style={{ paddingLeft: "6px" }}>{state === "" ? "Select a Playlist" : `Playlist Selected: ${props.playlists.find((playlist) => (state === playlist.id)).name}`}</h2>
             {props.playlists.map((playlist) => (
                 <button key={playlist.id} className={"pressable small-link playlist-button" + (playlist.id === state ? "-selected" : "")} onClick={() => { selectPlaylist(playlist.id) }}>{playlist.name}</button>
@@ -70,9 +91,9 @@ function PlaylistList(props) {
 function Playlist() {
     const [playlist,] = useContext(PlaylistContext);
     return (
-            <>
+        <>
             <h1>Playlist Chosen:</h1>
-            {playlist.map((track)=><h4>{track}</h4>)}
-            </>
+            {playlist.map((track) => <h4>{track}</h4>)}
+        </>
     )
 }

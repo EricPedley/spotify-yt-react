@@ -7,7 +7,8 @@ import YoutubeHalf from "./youtube/YoutubeHalf";
 import PlaylistContext from "./PlaylistContext";
 
 export default function App() {
-  const [state, setState] = useState()
+  const [state, setState] = useState();
+  
   return (
     <>
       <Header />

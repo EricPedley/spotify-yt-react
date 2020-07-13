@@ -29,7 +29,7 @@ module.exports = {
             body:querystring.stringify(data)
         }
         await fetch("https://accounts.spotify.com/api/token",options).then((res)=>res.json()).then((json)=>{console.log(json)
-        res.cookie("spotify_access_token",json.access_token)});
-        res.redirect("/");
+        res.cookie("spotify_access_token",json.access_token)});//cookie doesn't show up in browser
+        res.redirect("http://localhost:3000");
     }
 }
