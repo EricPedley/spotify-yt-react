@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import PlaylistContext from "../PlaylistContext";
 
 async function getPlaylists(access_token) {
@@ -7,30 +7,30 @@ async function getPlaylists(access_token) {
             'Authorization': 'Bearer ' + access_token
         }
     }
-    let user = await fetch("https://api.spotify.com/v1/me",options).then(res=>res.json()).catch((err)=>{console.log(err)});
-    let playlists = await fetch( `https://api.spotify.com/v1/users/${user.id}/playlists`,options).then(res=>res.json()).catch((err)=>{console.log(err)});
-    let returnval = {playlists:playlists.items,userName:user.display_name}
+    let user = await fetch("https://api.spotify.com/v1/me", options).then(res => res.json()).catch((err) => { console.log(err) });
+    let playlists = await fetch(`https://api.spotify.com/v1/users/${user.id}/playlists`, options).then(res => res.json()).catch((err) => { console.log(err) });
+    let returnval = { playlists: playlists.items, userName: user.display_name }
     console.log(returnval);
-    return user;
+    return returnval;
 }
 
 export default function SpotifyHalf() {
-    let spotify_access_token = document.cookie.split(";").find((row) => row.startsWith("spotify_access_token"));
-    let spotify_authenticated = false;
-    if (spotify_access_token) {
-        spotify_access_token = spotify_access_token.substring(21);
-        spotify_authenticated = true;
-    }
-    console.log(spotify_access_token);
-    const pres = getPlaylists(spotify_access_token);
-    console.log(pres);
-    const {playlists,userName} = pres;
-    const [state, setState] = useState(spotify_authenticated?"playlistList":"noAuth");
+    const [state, setState] = useState("noAuth");
+    useEffect(() => {
+        let spotify_access_token = document.cookie.split(";").find((row) => row.startsWith("spotify_access_token"));
+        let spotify_authenticated = false;
+        if (spotify_access_token) {
+            spotify_access_token = spotify_access_token.substring(21);
+            spotify_authenticated = true;
+            if(!state.playlistList)
+                getPlaylists(spotify_access_token).then(({ userName, playlists }) => { setState({ userName: userName, playlists: playlists, playlistList: true }) });
+        }
+    });
     return (
         <div className="col-md-6 half" id="spotify-half">
             {state === "noAuth" && <LoginButtons setParentState={setState} />}
             {state === "ImportControls" && <ImportControls setParentState={setState} />}
-            {state === "playlistList" && <PlaylistList userName = {userName||"no username"} playlists={playlists||[{ name: "track one", id: 1 }, { name: "track two", id: 2 }, { name: "track three", id: 3 }]} setParentState={setState} />}
+            {state.playlistList && <PlaylistList userName={state.userName || "no username"} playlists={state.playlists || [{ name: "track one", id: 1 }, { name: "track two", id: 2 }, { name: "track three", id: 3 }]} setParentState={setState} />}
             {state === "Playlist" && <Playlist setParentState={setState} />}
         </div>
     );
