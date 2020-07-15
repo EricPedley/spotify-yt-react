@@ -16,6 +16,6 @@ module.exports = {
         oauth2Client.getToken(req.query.code, function (err, token) {
             oauth2Client.setCredentials(token);
         });
-        res.redirect(`/#access_token=${spotify_params}&yt_initialized=true`);
+        res.cookie("youtube-auth",true).redirect("http://localhost:3000");
     }
 }

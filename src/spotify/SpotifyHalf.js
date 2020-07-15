@@ -15,23 +15,14 @@ async function getPlaylists(access_token) {
 }
 
 export default function SpotifyHalf() {
-    const [state, setState] = useState("noAuth");
-    useEffect(() => {
-        let spotify_access_token = document.cookie.split(";").find((row) => row.startsWith("spotify_access_token"));
-        let spotify_authenticated = false;
-        if (spotify_access_token) {
-            spotify_access_token = spotify_access_token.substring(21);
-            spotify_authenticated = true;
-            if(!state.playlistList)
-                getPlaylists(spotify_access_token).then(({ userName, playlists }) => { setState({ userName: userName, playlists: playlists, playlistList: true }) });
-        }
-    });
+    let spotify_access_token = document.cookie.split(";").find((row) => row.startsWith("spotify_access_token"));
+    const [state, setState] = useState((spotify_access_token?"playlistList":"noAuth"));
     return (
         <div className="col-md-6 half" id="spotify-half">
             {state === "noAuth" && <LoginButtons setParentState={setState} />}
             {state === "ImportControls" && <ImportControls setParentState={setState} />}
-            {state.playlistList && <PlaylistList userName={state.userName || "no username"} playlists={state.playlists || [{ name: "track one", id: 1 }, { name: "track two", id: 2 }, { name: "track three", id: 3 }]} setParentState={setState} />}
-            {state === "Playlist" && <Playlist setParentState={setState} />}
+            {state === "playlistList" && <PlaylistList setParentState={setState} />}
+            {state === "playlist" && <Playlist setParentState={setState} />}
         </div>
     );
 }
@@ -60,7 +51,6 @@ function ImportControls(props) {
     const [playlist, setPlaylist] = useContext(PlaylistContext);
     function submitJSON() {
         console.log(state);
-        props.setParentState("Playlist");
     }
     return (
         <>
@@ -73,15 +63,24 @@ function ImportControls(props) {
     )
 }
 function PlaylistList(props) {
-    const [state, setState] = useState("");
+    const [state,setState] = useState({userName:"loading",playlists:[{name:"loading",id:-1}]});
+    const [, setPlaylist] = useContext(PlaylistContext);
+    useEffect(() => {
+        let spotify_access_token = document.cookie.split(";").find((row) => row.startsWith("spotify_access_token"));
+        if (spotify_access_token) {
+            spotify_access_token = spotify_access_token.substring(21);
+            if(state.userName==="loading")
+                getPlaylists(spotify_access_token).then(({ userName, playlists }) => { setState({ userName: userName, playlists: playlists}) });
+        }
+    });
     function selectPlaylist(id) {
-        setState(id);
+        props.setParentState("playlist");
+        setPlaylist(["demo track one", "track two"]);
     }
     return (
         <div id="playlist-list">
-            <h1>Logged in as {props.userName}</h1>
-            <h2 style={{ paddingLeft: "6px" }}>{state === "" ? "Select a Playlist" : `Playlist Selected: ${props.playlists.find((playlist) => (state === playlist.id)).name}`}</h2>
-            {props.playlists.map((playlist) => (
+            <h1>Logged in as {state.userName}</h1>
+            {state.playlists.map((playlist) => (
                 <button key={playlist.id} className={"pressable small-link playlist-button" + (playlist.id === state ? "-selected" : "")} onClick={() => { selectPlaylist(playlist.id) }}>{playlist.name}</button>
             ))}
         </div>
@@ -93,7 +92,7 @@ function Playlist() {
     return (
         <>
             <h1>Playlist Chosen:</h1>
-            {playlist.map((track) => <h4>{track}</h4>)}
+            {playlist.map((track, index) => <h4 key={index}>{track}</h4>)}
         </>
     )
 }
