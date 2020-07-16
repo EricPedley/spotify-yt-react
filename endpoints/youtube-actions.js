@@ -6,7 +6,6 @@ const youtube = google.youtube({
 });
 module.exports = {
     listPlaylists: function (req, res) {
-        console.log("getting request for youtube playlists");
         youtube.playlists.list({ part: "snippet", mine: true }).then(function (ytres) {
             res.send(ytres.data);
         }).catch(function (err) {
@@ -18,7 +17,6 @@ module.exports = {
         });
     },
     searchAdd: function (req, res) {
-        console.log("searchAdd being run");
         youtube.search.list({
             "part": "snippet",
             "maxResults": 1,
