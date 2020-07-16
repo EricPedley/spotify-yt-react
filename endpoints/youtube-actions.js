@@ -6,11 +6,15 @@ const youtube = google.youtube({
 });
 module.exports = {
     listPlaylists: function (req, res) {
+        console.log("getting request for youtube playlists");
         youtube.playlists.list({ part: "snippet", mine: true }).then(function (ytres) {
             res.send(ytres.data);
         }).catch(function (err) {
-            if (("" + err).includes('quotaExceeded'))
-                res.send("quotaExceeded")
+            if (err.message.includes('quota'))
+                res.send("quota error")
+            else {
+                res.send(err.message);
+            }
         });
     },
     searchAdd: function (req, res) {

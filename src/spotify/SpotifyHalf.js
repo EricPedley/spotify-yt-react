@@ -81,7 +81,7 @@ function PlaylistList(props) {
         <div id="playlist-list">
             <h1>Logged in as {state.userName}</h1>
             {state.playlists.map((playlist) => (
-                <button key={playlist.id} className={"pressable small-link playlist-button" + (playlist.id === state ? "-selected" : "")} onClick={() => { selectPlaylist(playlist.id) }}>{playlist.name}</button>
+                <button key={playlist.id} className={"pressable small-link playlist-button no-background" + (playlist.id === state ? "-selected" : "")} onClick={() => { selectPlaylist(playlist.id) }}>{playlist.name}</button>
             ))}
         </div>
     )

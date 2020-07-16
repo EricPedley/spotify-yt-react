@@ -73,14 +73,11 @@ body {
   color:white;
 }
 .playlist-button {
-  background-color:transparent;
-  color:white;
   display:block;
 }
-.playlist-button-selected {
-  background-color:#1ed760;
-  color:#121212;
-  display:block;
+.no-background {
+  background-color:transparent;
+  color:white;
 }
 #convert-button {
   background-color:#FFFFFF;
