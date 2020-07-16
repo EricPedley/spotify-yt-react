@@ -32,12 +32,12 @@ function PlaylistSelect(props) {
         setState(id);
     }
     return (
-                <>
-                    <h3>Logged in as {props.playlists[0].snippet.channelTitle}</h3>
+                <div className="playlist-list">
+                    <h2>Logged in as {props.playlists[0].snippet.channelTitle}</h2>
                     {props.playlists.map((playlist) => (
-                        <button onClick={()=>{setSelected(playlist.id)}} className={`pressable small-link ${(state==playlist.id?"youtube-colors":"no-background")}`} key={playlist.id}>{playlist.snippet.title}</button>
+                        <button onClick={()=>{setSelected(playlist.id)}} className={`pressable small-link playlist-button ${(state===playlist.id?"youtube-colors":"no-background")}`} key={playlist.id}>{playlist.snippet.title}</button>
                     ))}
-                </>
+                </div>
             
     );
 }
