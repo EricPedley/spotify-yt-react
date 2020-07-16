@@ -32,7 +32,7 @@ a:hover.youtube-colors {
   background-color:#FF0000;
   color:#FFFFFF;
 }
-#playlist-list {
+.playlist-list {
   text-align:left;
 }
 #youtube-login {
