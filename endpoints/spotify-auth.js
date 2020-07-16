@@ -5,7 +5,6 @@ const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const spotify_redirect_uri = process.env.SPOTIFY_REDIRECT_URI; // Your redirect uri
 module.exports = {
     login: (req, res) => {
-        console.log("getting a spotify login request");
         const scope = 'playlist-read-private';
         res.redirect('https://accounts.spotify.com/authorize?' +
             querystring.stringify({
@@ -28,8 +27,8 @@ module.exports = {
             headers:{"Content-Type":"application/x-www-form-urlencoded"},
             body:querystring.stringify(data)
         }
-        await fetch("https://accounts.spotify.com/api/token",options).then((res)=>res.json()).then((json)=>{console.log(json)
-        res.cookie("spotify_access_token",json.access_token)});//cookie doesn't show up in browser
-        res.redirect("http://localhost:3000");
+        const oauthres = await fetch("https://accounts.spotify.com/api/token",options).then((res)=>res.json());
+        console.log(oauthres);
+        res.cookie("spotify_access_token",oauthres.access_token,{expire: 360000 + Date.now()}).redirect("http://localhost:3000");
     }
 }
