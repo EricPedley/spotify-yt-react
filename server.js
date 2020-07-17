@@ -5,12 +5,10 @@ const cors = require('cors');
 const spotifyAuth = require("./endpoints/spotify-auth");
 const youtubeAuth = require("./endpoints/youtube-auth");
 const youtubeActions = require("./endpoints/youtube-actions");
-const cookieParser = require("cookie-parser");
 var app = express();
 
 app.use(express.static(__dirname + '/public'))
-  .use(cors())
-  .use(cookieParser());
+  .use(cors());
 
 app.get('/spotify-login', spotifyAuth.login);
 app.get('/spotify-callback', spotifyAuth.callback);
