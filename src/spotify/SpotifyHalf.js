@@ -7,19 +7,29 @@ async function getPlaylists(access_token) {
             'Authorization': 'Bearer ' + access_token
         }
     }
-    let user = await fetch("https://api.spotify.com/v1/me", options).then(res => { if (!res.ok) return res.json() }).catch((err) => { console.log(err) });
+    let user = await fetch("https://api.spotify.com/v1/me", options).then(res => res.json()).catch((err) => { console.log(err) });
     let playlists = await pagerReq(`https://api.spotify.com/v1/users/${user.id}/playlists`, options);
     let returnval = { playlists: playlists, userName: user.display_name }
     console.log(returnval);
     return returnval;
 }
 
-export default function SpotifyHalf() {
-    const [state, setState] = useState("noAuth");
-    let spotify_access_token = document.cookie.split(";").find((row) => row.startsWith("spotify_access_token"));
-    if (spotify_access_token)
-        setState("playlistList");
 
+function pagerReq(items, url, options) {//makes a request to an endpoint where we expect a pager object to be returned, which lists 100 items and the url to fetch the next 100.
+    return fetch(url, options).then(res => res.json()).then((json) => {
+        console.log(items);
+        items = items.concat(json.items);
+        if (json.next) {
+            pagerReq(items, json.next, options);
+        } else {
+            return items;
+        }
+    }).catch((err) => { console.error(err); });
+}
+
+export default function SpotifyHalf() {
+    let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
+    const [state, setState] = useState(spotify_access_token?"playlistList":"noAuth");
     return (
         <div className="col-md-6 half" id="spotify-half">
             {state === "noAuth" && <LoginButtons setParentState={setState} />}
@@ -69,7 +79,7 @@ function PlaylistList(props) {
     const [state, setState] = useState({ userName: "loading", playlists: [{ name: "loading", id: -1 }] });
     const [, setPlaylist] = useContext(PlaylistContext);
     useEffect(() => {
-        let spotify_access_token = document.cookie.split(";").find((row) => row.startsWith("spotify_access_token"));
+        let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
         if (spotify_access_token) {
             spotify_access_token = spotify_access_token.substring(21);
             if (state.userName === "loading")
@@ -105,15 +115,4 @@ function Playlist() {
             {playlist.map((track, index) => <h4 key={index}>{track}</h4>)}
         </>
     )
-}
-
-function pagerReq(items, url, options) {//makes a request to an endpoint where we expect a pager object to be returned, which lists 100 items and the url to fetch the next 100.
-    return fetch(url, options).then(res => res.json()).then((json) => {
-        items = items.concat(json.items);
-        if (json.next) {
-            pagerReq(items, json.next, options);
-        } else {
-            return items;
-        }
-    }).catch((err) => { console.error(err); });
 }
