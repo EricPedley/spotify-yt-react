@@ -1,21 +1,31 @@
-const {google} = require("googleapis");
-const OAuth2 = google.auth.OAuth2;
-var youtube_client_id = process.env.YOUTUBE_CLIENT_ID;
-var youtube_redirect_uri = process.env.YOUTUBE_REDIRECT_URI;
-var youtube_client_secret = process.env.YOUTUBE_CLIENT_SECRET;
-var oauth2Client = new OAuth2(youtube_client_id,youtube_client_secret,youtube_redirect_uri);
-var spotify_params;
-module.exports = {//TODO this probably breaks if multiple people are using it at the same time since there is only one oauth2 client for the whole server
-    oauth2Client: oauth2Client,
+const fetch = require('node-fetch');
+const youtube_client_id = process.env.YOUTUBE_CLIENT_ID;
+const youtube_redirect_uri = process.env.YOUTUBE_REDIRECT_URI;
+const youtube_client_secret = process.env.YOUTUBE_CLIENT_SECRET;
+module.exports = {
     login: function (req, res) {
-        spotify_params=req.query.spotify_params;
-        res.redirect(oauth2Client.generateAuthUrl({ scope: "https://www.googleapis.com/auth/youtube.force-ssl" }));
+        const params = {
+            client_id:youtube_client_id,
+            redirect_uri:youtube_redirect_uri,
+            response_type:"code",
+            scope:"https://www.googleapis.com/auth/youtube.force-ssl"
+        };
+        res.redirect("https://accounts.google.com/o/oauth2/v2/auth?"+new URLSearchParams(params).toString());
+        //res.redirect(oauth2Client.generateAuthUrl({ scope: "https://www.googleapis.com/auth/youtube.force-ssl" }));
     },
     callback: async (req, res) => {
-        const tokenResponse = await oauth2Client.getToken(req.query.code);
-        const tokens = tokenResponse.tokens;
-        oauth2Client.setCredentials(tokenResponse);
-        console.log(tokens);
-        res.cookie("youtube_access_token",tokens.access_token,{expires:new Date(tokens.expiry_date)}).redirect("http://localhost:3000");
+        const options = {
+            method:"POST",
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body:new URLSearchParams({
+                code: req.query.code,
+                client_id: youtube_client_id,
+                client_secret: youtube_client_secret,
+                redirect_uri: youtube_redirect_uri,
+                grant_type: "authorization_code"
+            }).toString()
+        }
+        const oauthres = await fetch("https://oauth2.googleapis.com/token",options).then(res=>res.json());
+        res.cookie("youtube_access_token",oauthres.access_token,{maxAge:oauthres.expires_in*1000}).redirect("http://localhost:3000");
     }
 }
