@@ -7,8 +7,12 @@ import YoutubeHalf from "./youtube/YoutubeHalf";
 import PlaylistContext from "./PlaylistContext";
 
 export default function App() {
-  const [state, setState] = useState();
-  
+  const [state, setState] = useState({tryDisplayConvert});
+  function tryDisplayConvert() {//checks if both playlists are selected and if so, displays the convert button
+    if(state.ytID&&state.playlist) {
+      console.log("ready to convert")
+    }
+  }
   return (
     <>
       <Header />
@@ -20,8 +24,8 @@ export default function App() {
           </PlaylistContext.Provider>
         </div>
         <div className="row">
-          <div className="col-md-6" style={{ backgroundColor: "#1ed760", height: "10px" }}></div>
-          <div className="col-md-6" style={{ backgroundColor: "#FF0000", height: "10px" }}></div>
+          <div className="col-md-6 spotify-colors color-bar"></div>
+          <div className="col-md-6 youtube-colors color-bar"></div>
         </div>
         <div id="popup"></div>
       </div>
