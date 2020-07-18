@@ -22,7 +22,6 @@ a:hover.youtube-colors {
 }
 .logout-button {
   float:right;
-  padding: 5px 10px 5px;
 }
 .spotify-colors {
   background-color:#1ed760;
@@ -32,7 +31,7 @@ a:hover.youtube-colors {
   background-color:#FF0000;
   color:#FFFFFF;
 }
-.playlist-list {
+.left-align {
   text-align:left;
 }
 #youtube-login {
@@ -54,16 +53,14 @@ a:hover.youtube-colors {
   text-align:center;
   overflow:auto;
   padding-top:10px;
+  margin-top:10px;
+  padding-bottom:10px;
 }
-#spotify-half {
+.left-half {
   border-right: solid 1px #121212;
-  margin-top:10px;
-  padding-bottom:10px;
 }
-#youtube-half {
+.right-half {
   border-left: solid 1px #121212;
-  margin-top:10px;
-  padding-bottom:10px;
 }
 .header {
   background-color:#121212;
@@ -143,4 +140,10 @@ body {
   display:block;
   margin: 0 auto;
   font-size:1.17em;
+}
+.large-text {
+  display:inline;
+}
+.color-bar {
+  height:10px;
 }
