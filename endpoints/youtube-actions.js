@@ -6,15 +6,16 @@ const youtube = google.youtube({
 });
 module.exports = {
     listPlaylists: function (req, res) {
-        youtube.playlists.list({ part: "snippet", mine: true }).then(function (ytres) {
-            res.send(ytres.data);
-        }).catch(function (err) {
-            if (err.message.includes('quota'))
-                res.send("quota error")
-            else {
-                res.send(err.message);
-            }
-        });
+        fetch(`https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&ke$`).then((res)=>res.json()).then((json)=>{console.log(json)})
+        // youtube.playlists.list({ part: "snippet", mine: true }).then(function (ytres) {
+        //     res.send(ytres.data);
+        // }).catch(function (err) {
+        //     if (err.message.includes('quota'))
+        //         res.send("quota error")
+        //     else {
+        //         res.send({message:err.message});
+        //     }
+        // });
     },
     searchAdd: function (req, res) {
         youtube.search.list({
