@@ -76,12 +76,6 @@ body {
   background-color:transparent;
   color:white;
 }
-#convert-button {
-  background-color:#FFFFFF;
-  color:#121212;
-  font-size:1.5em;
-  animation: pulse 3s linear infinite;
-}
 #popup {
   display:none;
   position:fixed;
@@ -146,4 +140,14 @@ body {
 }
 .color-bar {
   height:10px;
+}
+#convert-button {
+  position:absolute;
+  left: 45%;
+  top:30%;
+  border: solid #1ed760;
+  animation: border-pulse 3s ease infinite;
+}
+@keyframes border-pulse {
+  50% {border-color:#FF0000}
 }

@@ -34,14 +34,15 @@ function PlaylistSelect(props) {
             setState({...state,playlists:json.items});
         });
     function setSelected(id) {
-        setContext({...context,ytID:id});
+        setContext({ytID:id, ...context});
+        console.log(context);
     }
     return (
                 <div className="left-align">
                     {!state.playlists&&<h2>Loading...</h2>}
                     {state.playlists&&<><h2>Logged in as {state.playlists[0].snippet.channelTitle}</h2>
                     {state.playlists.map((playlist) => (
-                        <button onClick={()=>{setSelected(playlist.id)}} className={`pressable small-link playlist-button ${(state.id===playlist.id?"youtube-colors":"no-background")}`} key={playlist.id}>{playlist.snippet.title}</button>
+                        <button onClick={()=>{setSelected(playlist.id)}} className={`pressable small-link playlist-button ${(context.ytID===playlist.id?"youtube-colors":"no-background")}`} key={playlist.id}>{playlist.snippet.title}</button>
                     ))}</>}
                     
                 </div>
