@@ -12,8 +12,10 @@ module.exports = {//TODO this probably breaks if multiple people are using it at
         res.redirect(oauth2Client.generateAuthUrl({ scope: "https://www.googleapis.com/auth/youtube.force-ssl" }));
     },
     callback: async (req, res) => {
-        const token = await oauth2Client.getToken(req.query.code);
-        oauth2Client.setCredentials(token);
-        res.cookie("youtube-auth",true,{expires:new Date(token.expiry_date)}).redirect("http://localhost:3000");
+        const tokenResponse = await oauth2Client.getToken(req.query.code);
+        const tokens = tokenResponse.tokens;
+        oauth2Client.setCredentials(tokenResponse);
+        console.log(tokens);
+        res.cookie("youtube_access_token",tokens.access_token,{expires:new Date(tokens.expiry_date)}).redirect("http://localhost:3000");
     }
 }
