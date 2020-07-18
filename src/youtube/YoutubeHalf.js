@@ -1,19 +1,14 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useContext } from "react"
+import PlaylistContext from "../PlaylistContext";
 export default function YoutubeHalf() {
-    const [state,setState] = useState({playlists:undefined});
+    let youtube_access_token = document.cookie.split("; ").find((row) => row.startsWith("youtube_access_token"));
+    const [state,setState] = useState(youtube_access_token?"playlistList":"noAuth");
     // console.log(document.cookie);
-    // let youtube_auth = document.cookie.split("; ").find((row) => row.startsWith("youtube-auth"));
-    useEffect(()=>{
-        if(!state.playlists) {
-            fetch("http://localhost:8888/youtube-list-playlists").then((res) => res.json()).then((json) => { setState({ playlists: json.items }); console.log(json) });
-        }
-    });
-    
 
     return (
-        <div className="col-md-6 half" id="youtube-half">
-            {!state.playlists && <LoginButton />}
-            {state.playlists && <PlaylistSelect playlists={state.playlists} />}
+        <div className="col-md-6 half right-half">
+            {state==="noAuth" && <LoginButton />}
+            {state==="playlistList" && <PlaylistSelect token={youtube_access_token} />}
         </div>
     );
 }
@@ -27,16 +22,28 @@ function LoginButton() {
 }
 
 function PlaylistSelect(props) {
-    const [state, setState] = useState("");
+    const [state, setState] = useState({});
+    const [context,setContext]  = useContext(PlaylistContext);
+    const options = {
+        headers: {
+            Authorization: `Bearer ${props.token.substring(21)}`
+        }
+    };
+    if(!state.playlists)
+        fetch("https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true",options).then((res)=>res.json()).then((json)=>{
+            setState({...state,playlists:json.items});
+        });
     function setSelected(id) {
-        setState(id);
+        setContext({...context,ytID:id});
     }
     return (
-                <div className="playlist-list">
-                    <h2>Logged in as {props.playlists[0].snippet.channelTitle}</h2>
-                    {props.playlists.map((playlist) => (
-                        <button onClick={()=>{setSelected(playlist.id)}} className={`pressable small-link playlist-button ${(state===playlist.id?"youtube-colors":"no-background")}`} key={playlist.id}>{playlist.snippet.title}</button>
-                    ))}
+                <div className="left-align">
+                    {!state.playlists&&<h2>Loading...</h2>}
+                    {state.playlists&&<><h2>Logged in as {state.playlists[0].snippet.channelTitle}</h2>
+                    {state.playlists.map((playlist) => (
+                        <button onClick={()=>{setSelected(playlist.id)}} className={`pressable small-link playlist-button ${(state.id===playlist.id?"youtube-colors":"no-background")}`} key={playlist.id}>{playlist.snippet.title}</button>
+                    ))}</>}
+                    
                 </div>
             
     );
