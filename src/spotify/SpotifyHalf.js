@@ -60,16 +60,17 @@ function LoginButtons(props) {
 
 function ImportControls(props) {
     const [state, setState] = useState("");
-    const [, setPlaylist] = useContext(PlaylistContext);
-    function submitJSON() {
-        console.log(state);
+    const [context, setContext] = useContext(PlaylistContext);
+    function goBack() {
+        props.setParentState("noAuth");
     }
     return (
         <>
-            <h3>Enter JSON Text Here:</h3>
+            <h2>Enter JSON Text Here:</h2>
+            <button className="pressable small-link logout-button" onClick={goBack}>Back</button>
             <form>
                 <code><textarea wrap="soft" onChange={(event) => { setState(event.target.value) }} id="spotify-import" value={state}></textarea></code>
-                <input type="submit" className="pressable small-link" id="import-submit" onClick={() => { setPlaylist(JSON.parse(state)); submitJSON() }} value="Import Playlist"></input>
+                <input type="submit" className="pressable small-link" id="import-submit" onClick={() => { setContext({...context,playlist: JSON.parse(state)}); props.setParentState("playlist") }} value="Import Playlist"></input>
             </form>
         </>
     )
@@ -77,6 +78,9 @@ function ImportControls(props) {
 function PlaylistList(props) {
     const [state, setState] = useState({ userName: "loading", playlists: [{ name: "loading", id: -1 }] });
     const [context, setContext] = useContext(PlaylistContext);
+    function goBack() {
+        props.setParentState("noAuth");
+    }
     useEffect(() => {
         let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
         if (spotify_access_token) {
@@ -97,7 +101,7 @@ function PlaylistList(props) {
                 ...context,
                 playlist: {
                     name: name,
-                    tracks: items.map((item) => item.track)
+                    tracks: items.map((item) => item.track.artists.reduce(((prev, curr) => `${prev}${curr.name} `), "") + `- ${item.track.name}`)
                 }
             });
             props.setParentState("playlist");
@@ -107,7 +111,7 @@ function PlaylistList(props) {
 
         <div className="left-align">
             {!state.playlists && <h2>Loading...</h2>}
-            {state.playlists && <><h2>Logged in as {state.userName}</h2>
+            {state.playlists && <><h2>Logged in as {state.userName}</h2><button className="pressable small-link logout-button" onClick={goBack}>Back</button>
                 {state.playlists.map((playlist) => (
                     <button key={playlist.id} className={"pressable small-link playlist-button no-background" + (playlist.id === state ? "-selected" : "")} onClick={() => { selectPlaylist(playlist.id, playlist.name) }}>{playlist.name}</button>
                 ))}</>}
@@ -118,6 +122,7 @@ function PlaylistList(props) {
 function Playlist(props) {
     const [context, setContext] = useContext(PlaylistContext);
     const playlist = context.playlist;
+    console.log(playlist);
     function goBack() {
         setContext({ ...context, playlist: null });
         props.setParentState("playlistList");
@@ -128,7 +133,7 @@ function Playlist(props) {
                 <h2 className="large-text">{`Tracks in ${playlist.name}`}</h2>
                 <button className="pressable small-link logout-button" onClick={goBack}>Back</button>
             </div>
-            {playlist.tracks.map((track, index) => <div key={index}>{track.name}</div>)}
+            {playlist.tracks.map((track, index) => <div key={index}>{track}</div>)}
         </div>
     )
 }

@@ -1,8 +1,8 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import PlaylistContext from "../PlaylistContext";
 export default function YoutubeHalf() {
     let youtube_access_token = document.cookie.split("; ").find((row) => row.startsWith("youtube_access_token"));
-    const [state,setState] = useState(youtube_access_token&&youtube_access_token.length>21 ? "playlistList" : "noAuth");
+    const [state, setState] = useState(youtube_access_token && youtube_access_token.length > 21 ? "playlistList" : "noAuth");
     // console.log(document.cookie);
 
     return (
@@ -29,23 +29,33 @@ function PlaylistSelect(props) {
             Authorization: `Bearer ${props.token}`
         }
     };
-    if (!state.playlists)
-        fetch("https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true", options).then((res) => res.json()).then((json) => {
-            setState({ ...state, playlists: json.items });
-        }).catch(console.error);
+    useEffect(() => {
+        async function fetchPlaylists() {
+            const res = await fetch("https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true", options);
+            console.log(res);
+            const json = await res.json();
+            console.log(json);
+            setState({ ...state, playlists: json.items, error: json.error.errors[0].message||undefined });
+            console.log("setting state", state);
+
+        }
+        fetchPlaylists();
+    }, []);
+
     function setSelected(id) {
         setContext({ ytID: id, ...context });
         console.log(context);
     }
 
     function logOut() {
-        document.cookie = new URLSearchParams({youtube_access_token:""});
+        document.cookie = new URLSearchParams({ youtube_access_token: "" });
         props.setParentState("noAuth");
-        setContext({...context,ytID:null});
+        setContext({ ...context, ytID: null });
     }
     return (
         <div className="left-align">
-            {!state.playlists && <h2>Loading...</h2>}
+            {!state.playlists && !state.error && <h2>Loading...</h2>}
+            {state.error && <h2 dangerouslySetInnerHTML={{__html:state.error}}></h2>}
             {state.playlists && <><h2>Logged in as {state.playlists[0].snippet.channelTitle}</h2>
                 <button className="pressable small-link logout-button" onClick={logOut}>Log Out</button>
                 {state.playlists.map((playlist) => (
