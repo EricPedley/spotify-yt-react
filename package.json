@@ -9,6 +9,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "node-fetch": "^2.6.0",
+    "puppeteer": "^5.2.1",
     "react": "^16.13.1",
     "react-cookie": "^4.0.3",
     "react-dom": "^16.13.1",

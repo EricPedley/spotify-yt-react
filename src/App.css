@@ -141,10 +141,12 @@ body {
 .color-bar {
   height:10px;
 }
-#convert-button {
+#convert-popup {
   position:absolute;
   left: 45%;
   top:30%;
+}
+#convert-button {
   border: solid #1ed760;
   animation: border-pulse 3s ease infinite;
 }

@@ -20,24 +20,7 @@ export default function ConvertPopup(props) {
     console.log(tracks, ytID, playlist);
   }
   async function convertOne(track, ytID, token) {
-    const options1 = {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    };
-    const data = {
-      "part": "snippet",
-      "maxResults": 1,
-      "type": "video",
-      "q": track
-    };
-    const searchres = await fetch("https://www.googleapis.com/youtube/v3/search?" + new URLSearchParams(data), options1).then(res => res.json()).catch((err) => {
-      console.log(err);
-      if (err.message === 'The request cannot be completed because you have exceeded your <a href="/youtube/v3/getting-started#quota">quota</a>.') {
-        throw new Error(track)
-      }
-    });
-    console.log(searchres);
+    const {id:vidID} = await fetch(`http://localhost:8888/youtube-search?term=${track}`).then(res=>res.json());
     const options2 = {
       headers: {
         Authorization: `Bearer ${token}`
@@ -48,7 +31,7 @@ export default function ConvertPopup(props) {
           "playlistId": ytID,
           "resourceId": {
             "kind": "youtube#video",
-            "videoId": searchres.items[0].id.videoId
+            "videoId": vidID
           }
         }
       })
@@ -56,13 +39,13 @@ export default function ConvertPopup(props) {
     const insertres = await fetch("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet", options2).then(res => res.json());
     console.log(insertres);
     setState([...state,track])
+    document.getElementById("finished").innerHTML+=`<div>${track}</div>`
   }
 
   return (
     <div id="convert-popup">
       <button className="pressable big-link" id="convert-button" onClick={() => { convert(props) }}><h3>Convert</h3></button>
-      {state.length > 0 && <><h2>Finished Tracks:</h2>{state.forEach((track) => <div>{track}</div>)}</>}
+      {state.length > 0 && <div id="finished"><h4>Finished Tracks:</h4></div>}
     </div>
   )
 }
-

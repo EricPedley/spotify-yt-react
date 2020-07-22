@@ -35,7 +35,11 @@ function PlaylistSelect(props) {
             console.log(res);
             const json = await res.json();
             console.log(json);
-            setState({ ...state, playlists: json.items, error: json.error.errors[0].message||undefined });
+            var newstate = { ...state, playlists: json.items }
+            if (json.error) {
+                newstate = { ...newstate, error: json.error.errors[0].message }
+            }
+            setState(newstate);
             console.log("setting state", state);
 
         }
@@ -55,7 +59,7 @@ function PlaylistSelect(props) {
     return (
         <div className="left-align">
             {!state.playlists && !state.error && <h2>Loading...</h2>}
-            {state.error && <h2 dangerouslySetInnerHTML={{__html:state.error}}></h2>}
+            {state.error && <h2 dangerouslySetInnerHTML={{ __html: state.error }}></h2>}
             {state.playlists && <><h2>Logged in as {state.playlists[0].snippet.channelTitle}</h2>
                 <button className="pressable small-link logout-button" onClick={logOut}>Log Out</button>
                 {state.playlists.map((playlist) => (
