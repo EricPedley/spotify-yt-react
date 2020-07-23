@@ -142,13 +142,20 @@ body {
   height:10px;
 }
 #convert-popup {
+  width:400px;
+  display:block;
   position:absolute;
-  left: 45%;
-  top:30%;
+  left: calc(50vw - 200px);
+  text-align:center;
 }
 #convert-button {
+  display:block;
+  margin: 0 auto;
   border: solid #1ed760;
   animation: border-pulse 3s ease infinite;
+}
+#finished {
+  background-color:#121212;
 }
 @keyframes border-pulse {
   50% {border-color:#FF0000}

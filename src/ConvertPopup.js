@@ -43,8 +43,8 @@ export default function ConvertPopup(props) {
   }
 
   return (
-    <div id="convert-popup">
-      <button className="pressable big-link" id="convert-button" onClick={() => { convert(props) }}><h3>Convert</h3></button>
+    <div id="convert-popup" className="big-link">
+      {!state.length>0&&<button className="pressable big-link" id="convert-button" onClick={() => { convert(props) }}><h3>Convert</h3></button>}
       {state.length > 0 && <div id="finished"><h4>Finished Tracks:</h4></div>}
     </div>
   )
