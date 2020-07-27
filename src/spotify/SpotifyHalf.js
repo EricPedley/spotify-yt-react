@@ -40,47 +40,55 @@ export default function SpotifyHalf() {
 }
 
 function LoginButtons(props) {
+    let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
+
     function showImportScreen() {
         props.setParentState("ImportControls");
     }
+    function logOut() {
+        console.log("logout pressed");
+    }
     return (
-        <>
-            <a href="http://localhost:8888/spotify-login" id="spotify-login" className="big-link spotify-colors">
+        <div id="login-buttons">
+            {spotify_access_token && <>
+                <button className="big-link pressable spotify-colors" onClick={() => { props.setParentState("playlistList") }}><h3>Choose a Spotify Playlist</h3></button>
+                <button className="pressable small-link" onClick={logOut}>Log Out</button>
+            </>}
+            {!spotify_access_token && <a href="http://localhost:8888/spotify-login" className="big-link spotify-colors">
                 <h3>Log in with Spotify</h3>
-            </a>
+            </a>}
             <br></br>
             <br></br>
             <button id="import-button" onClick={showImportScreen} className="pressable big-link">
                 <h3>Or Import Tracks From JSON</h3>
             </button>
             <div id="import-holder"></div>
-        </>
+        </div>
     )
 }
 
 function ImportControls(props) {
     const [state, setState] = useState("");
     const [context, setContext] = useContext(PlaylistContext);
-    function goBack() {
-        props.setParentState("noAuth");
-    }
     return (
         <>
-            <h2>Enter JSON Text Here:</h2>
-            <button className="pressable small-link logout-button" onClick={goBack}>Back</button>
+            <div>
+                <h2 className="large-text">Enter JSON Text Here:</h2>
+                <button className="pressable small-link logout-button" onClick={goBack}>Back</button>
+            </div>
             <form>
                 <code><textarea wrap="soft" onChange={(event) => { setState(event.target.value) }} id="spotify-import" value={state}></textarea></code>
-                <input type="submit" className="pressable small-link" id="import-submit" onClick={() => { setContext({...context,playlist: JSON.parse(state)}); props.setParentState("playlist") }} value="Import Playlist"></input>
+                <input type="submit" className="pressable small-link" id="import-submit" onClick={() => { setContext({ ...context, playlist: JSON.parse(state) }); props.setParentState("playlist") }} value="Import Playlist"></input>
             </form>
         </>
     )
+    function goBack() {
+        props.setParentState("noAuth");
+    }
 }
 function PlaylistList(props) {
     const [state, setState] = useState({ userName: "loading", playlists: [{ name: "loading", id: -1 }] });
     const [context, setContext] = useContext(PlaylistContext);
-    function goBack() {
-        props.setParentState("noAuth");
-    }
     useEffect(() => {
         let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
         if (spotify_access_token) {
@@ -89,6 +97,19 @@ function PlaylistList(props) {
                 getPlaylists(spotify_access_token).then(({ userName, playlists }) => { setState({ userName: userName, playlists: playlists }) });
         }
     });
+    return (
+
+        <div className="left-align">
+            {!state.playlists && <h2>Loading...</h2>}
+            {state.playlists && <><div><h2 className="large-text">Logged in as {state.userName}</h2><button className="pressable small-link logout-button" onClick={goBack}>Back</button></div>
+                {state.playlists.map((playlist) => (
+                    <button key={playlist.id} className={"pressable small-link playlist-button no-background" + (playlist.id === state ? "-selected" : "")} onClick={() => { selectPlaylist(playlist.id, playlist.name) }}>{playlist.name}</button>
+                ))}</>}
+        </div>
+    )
+    function goBack() {
+        props.setParentState("noAuth");
+    }
     function selectPlaylist(id, name) {
         let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
         const options = {
@@ -107,16 +128,7 @@ function PlaylistList(props) {
             props.setParentState("playlist");
         });
     }
-    return (
 
-        <div className="left-align">
-            {!state.playlists && <h2>Loading...</h2>}
-            {state.playlists && <><h2>Logged in as {state.userName}</h2><button className="pressable small-link logout-button" onClick={goBack}>Back</button>
-                {state.playlists.map((playlist) => (
-                    <button key={playlist.id} className={"pressable small-link playlist-button no-background" + (playlist.id === state ? "-selected" : "")} onClick={() => { selectPlaylist(playlist.id, playlist.name) }}>{playlist.name}</button>
-                ))}</>}
-        </div>
-    )
 }
 
 function Playlist(props) {

@@ -17,9 +17,6 @@ a:hover.spotify-colors {
 a:hover.youtube-colors {
   color:#121212;
 }
-#spotify-login {
-  margin-top:30%;
-}
 .logout-button {
   float:right;
 }
@@ -162,4 +159,7 @@ body {
 }
 @keyframes border-pulse {
   50% {border-color:#FF0000}
+}
+#login-buttons {
+  padding-top:30%;
 }

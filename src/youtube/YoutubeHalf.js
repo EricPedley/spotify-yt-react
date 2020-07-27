@@ -45,9 +45,27 @@ function PlaylistSelect(props) {
         }
         fetchPlaylists();
     }, []);
+    
+    return (
+        <div className="left-align">
+            {!state.playlists && !state.error && <h2>Loading...</h2>}
+            {state.error && <h2 dangerouslySetInnerHTML={{ __html: state.error }}></h2>}
+            {state.playlists && <>
+                <div>
+                    <h2 className="large-text">Logged in as {state.playlists[0].snippet.channelTitle}</h2>
+                    <button className="pressable small-link logout-button" onClick={logOut}>Log Out</button>
+                </div>
+                {state.playlists.map((playlist) => (
+                    <button onClick={() => { setSelected(playlist.id) }} className={`pressable small-link playlist-button ${(context.ytID === playlist.id ? "youtube-colors" : "no-background")}`} key={playlist.id}>{playlist.snippet.title}</button>
+                ))}</>}
+
+        </div>
+
+    );
 
     function setSelected(id) {
-        setContext({ ytID: id, ...context });
+        console.log("setting selected for "+id)
+        setContext({...context, ytID:id });
         console.log(context);
     }
 
@@ -56,20 +74,5 @@ function PlaylistSelect(props) {
         props.setParentState("noAuth");
         setContext({ ...context, ytID: null });
     }
-    return (
-        <div className="left-align">
-            {!state.playlists && !state.error && <h2>Loading...</h2>}
-            {state.error && <h2 dangerouslySetInnerHTML={{ __html: state.error }}></h2>}
-            {state.playlists && <><h2></h2>
-            <div>
-                <h2 className="large-text">Logged in as {state.playlists[0].snippet.channelTitle}</h2>
-                <button className="pressable small-link logout-button" onClick={logOut}>Log Out</button>
-            </div>
-                {state.playlists.map((playlist) => (
-                    <button onClick={() => { setSelected(playlist.id) }} className={`pressable small-link playlist-button ${(context.ytID === playlist.id ? "youtube-colors" : "no-background")}`} key={playlist.id}>{playlist.snippet.title}</button>
-                ))}</>}
 
-        </div>
-
-    );
 }
