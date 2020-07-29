@@ -63,7 +63,7 @@ function LoginButtons(props) {
                 <br></br>
                 <button className="big-link pressable spotify-colors" onClick={logOut}><h3>Log Out</h3></button>
             </>}
-            {!spotify_access_token && <a href={`${path}/spotify-login`} className="big-link spotify-colors">
+            {!spotify_access_token && <a href={`${path}spotify-login`} className="big-link spotify-colors">
                 <h3>Log in with Spotify</h3>
             </a>}
             <br></br>

@@ -28,7 +28,7 @@ export default function ConvertPopup(props) {
     console.log(tracks, ytID, playlist);
   }
   async function convertOne(track, ytID, token) {
-    const { id: vidID } = await fetch(`${path}/youtube-search?term=${track}`).then(res => res.json());
+    const { id: vidID } = await fetch(`${path}youtube-search?term=${track}`).then(res => res.json());
     const options2 = {
       headers: {
         Authorization: `Bearer ${token}`

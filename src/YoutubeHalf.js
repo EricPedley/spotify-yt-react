@@ -17,7 +17,7 @@ export default function YoutubeHalf() {
 
 function LoginButton() {
     return (
-        <a href={`${path}/youtube-login`} id="youtube-login" className="big-link youtube-colors">
+        <a href={`${path}youtube-login`} id="youtube-login" className="big-link youtube-colors">
             <h3>Log in with Youtube</h3>
         </a>
     );
