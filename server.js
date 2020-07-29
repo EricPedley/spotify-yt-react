@@ -7,11 +7,8 @@ const youtubeAuth = require("./endpoints/youtube-auth");
 const youtubeSearch = require("./endpoints/youtube-search");
 var app = express();
 
-app.use(express.static(__dirname + 'build'))
+app.use(express.static(__dirname + '/build'))
   .use(cors());
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
 
 app.get('/spotify-login', spotifyAuth.login);
 app.get('/spotify-callback', spotifyAuth.callback);
