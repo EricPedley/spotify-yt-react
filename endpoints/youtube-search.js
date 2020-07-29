@@ -1,9 +1,5 @@
 const puppeteer = require("puppeteer");
-let browser;
-(async ()=>{
-    browser = await puppeteer.launch();
-    console.log("browser launching");
-})();
+
 let requests = 0;
 module.exports = {
     search: async (req,res)=>{
@@ -18,10 +14,12 @@ module.exports = {
 
 const search = async (query) => {
     try {
+        const browser = await puppeteer.launch();
         const page = await browser.newPage();
         await page.goto(`https://www.youtube.com/results?search_query=${new URLSearchParams(query).toString()}`);
         const bruh = await page.$eval("#video-title", (element) => element.href);
         await page.close();
+        await browser.close();
         return bruh.substring(bruh.indexOf("?v=")+3);
     } catch(error) {
         console.log("error for query "+query);
