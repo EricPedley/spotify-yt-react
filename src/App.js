@@ -30,7 +30,6 @@ export default function App() {
           <div className="col-md-6 spotify-colors color-bar"></div>
           <div className="col-md-6 youtube-colors color-bar"></div>
         </div>
-        <div id="popup"></div>
       </div>
       <Footer />
     </>
