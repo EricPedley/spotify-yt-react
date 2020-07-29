@@ -43,9 +43,8 @@ export default function SpotifyHalf() {
 
 function LoginButtons(props) {
     let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
-    if (spotify_access_token && !spotify_access_token.length > 21) {
-        spotify_access_token = undefined;
-        console.log("no token")
+    if (spotify_access_token && spotify_access_token.length <= 21) {
+        spotify_access_token = false;
     }
     function showImportScreen() {
         props.setParentState("ImportControls");
@@ -53,6 +52,7 @@ function LoginButtons(props) {
     function logOut() {
         window.open("https://spotify.com/logout", "_blank", "top=0&,left=0,")
         document.cookie = "spotify_access_token=";
+        window.location.reload(false);
     }
     return (
         <div id="login-buttons">
@@ -99,15 +99,16 @@ function PlaylistList(props) {
     const [context, setContext] = useContext(PlaylistContext);
     useEffect(() => {
         let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
-        if (spotify_access_token && !spotify_access_token.length > 21) {
-            spotify_access_token = undefined;
-            props.setParentState("noAuth")
-        }
-        if (spotify_access_token) {
-            spotify_access_token = spotify_access_token.substring(21);
-            if (state.userName === "loading")
-                getPlaylists(spotify_access_token).then(({ userName, playlists }) => { setState({ userName: userName, playlists: playlists }) });
-        }
+        if(spotify_access_token) {
+            if(spotify_access_token.length>21) {
+                spotify_access_token = spotify_access_token.substring(21);
+                if (state.userName === "loading")
+                    getPlaylists(spotify_access_token).then(({ userName, playlists }) => { setState({ userName: userName, playlists: playlists }) });
+            } else {
+                spotify_access_token = undefined;
+                props.setParentState("noAuth")
+            }
+        } 
     });
     return (
 
@@ -124,8 +125,6 @@ function PlaylistList(props) {
     }
     function selectPlaylist(id, name) {
         let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
-        if (spotify_access_token && !spotify_access_token.length > 21)
-            spotify_access_token = undefined;
         const options = {
             headers: {
                 'Authorization': 'Bearer ' + spotify_access_token.substring(21)
