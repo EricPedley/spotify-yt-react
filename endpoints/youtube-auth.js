@@ -26,6 +26,11 @@ module.exports = {
             }).toString()
         }
         const oauthres = await fetch("https://oauth2.googleapis.com/token",options).then(res=>res.json());
-        res.cookie("youtube_access_token",oauthres.access_token,{maxAge:oauthres.expires_in*1000}).redirect("http://localhost:3000");
+        let base="";
+        if(process.env.NODE_ENV==="development")
+            base="http://localhost:8888";
+        else
+            base=`${req.protocol}://${req.hostname}`;
+        res.cookie("youtube_access_token",oauthres.access_token,{maxAge:oauthres.expires_in*1000}).redirect(base);
     }
 }
