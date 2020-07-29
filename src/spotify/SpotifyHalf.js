@@ -28,6 +28,8 @@ async function pagerReq(url, options, items = []) {//makes a request to an endpo
 
 export default function SpotifyHalf() {
     let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
+    if (spotify_access_token && !spotify_access_token.length > 21)
+        spotify_access_token = undefined;
     const [state, setState] = useState(spotify_access_token ? "playlistList" : "noAuth");
     return (
         <div className="col-md-6 half left-half">
@@ -41,18 +43,24 @@ export default function SpotifyHalf() {
 
 function LoginButtons(props) {
     let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
-
+    if (spotify_access_token && !spotify_access_token.length > 21) {
+        spotify_access_token = undefined;
+        console.log("no token")
+    }
     function showImportScreen() {
         props.setParentState("ImportControls");
     }
     function logOut() {
-        console.log("logout pressed");
+        window.open("https://spotify.com/logout", "_blank", "top=0&,left=0,")
+        document.cookie = "spotify_access_token=";
     }
     return (
         <div id="login-buttons">
             {spotify_access_token && <>
                 <button className="big-link pressable spotify-colors" onClick={() => { props.setParentState("playlistList") }}><h3>Choose a Spotify Playlist</h3></button>
-                <button className="pressable small-link" onClick={logOut}>Log Out</button>
+                <br></br>
+                <br></br>
+                <button className="big-link pressable spotify-colors" onClick={logOut}><h3>Log Out</h3></button>
             </>}
             {!spotify_access_token && <a href="http://localhost:8888/spotify-login" className="big-link spotify-colors">
                 <h3>Log in with Spotify</h3>
@@ -91,6 +99,10 @@ function PlaylistList(props) {
     const [context, setContext] = useContext(PlaylistContext);
     useEffect(() => {
         let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
+        if (spotify_access_token && !spotify_access_token.length > 21) {
+            spotify_access_token = undefined;
+            props.setParentState("noAuth")
+        }
         if (spotify_access_token) {
             spotify_access_token = spotify_access_token.substring(21);
             if (state.userName === "loading")
@@ -112,6 +124,8 @@ function PlaylistList(props) {
     }
     function selectPlaylist(id, name) {
         let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
+        if (spotify_access_token && !spotify_access_token.length > 21)
+            spotify_access_token = undefined;
         const options = {
             headers: {
                 'Authorization': 'Bearer ' + spotify_access_token.substring(21)
