@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import path from "./serverURL"
 export default function ConvertPopup(props) {
   const [state, setState] = useState("button");
   console.log("rerending");
@@ -27,7 +28,7 @@ export default function ConvertPopup(props) {
     console.log(tracks, ytID, playlist);
   }
   async function convertOne(track, ytID, token) {
-    const { id: vidID } = await fetch(`http://localhost:8888/youtube-search?term=${track}`).then(res => res.json());
+    const { id: vidID } = await fetch(`${path}/youtube-search?term=${track}`).then(res => res.json());
     const options2 = {
       headers: {
         Authorization: `Bearer ${token}`

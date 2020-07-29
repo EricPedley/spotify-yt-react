@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import './App.css';
 import Header from "./Header";
 import Footer from "./Footer";
-import SpotifyHalf from "./spotify/SpotifyHalf";
-import YoutubeHalf from "./youtube/YoutubeHalf";
+import SpotifyHalf from "./SpotifyHalf";
+import YoutubeHalf from "./YoutubeHalf";
 import PlaylistContext from "./PlaylistContext";
 import ConvertPopup from "./ConvertPopup";
 

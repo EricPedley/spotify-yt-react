@@ -1,5 +1,7 @@
 import React, { useState, useContext, useEffect } from "react"
-import PlaylistContext from "../PlaylistContext";
+import PlaylistContext from "./PlaylistContext";
+import path from "./serverURL"
+
 export default function YoutubeHalf() {
     let youtube_access_token = document.cookie.split("; ").find((row) => row.startsWith("youtube_access_token"));
     const [state, setState] = useState(youtube_access_token && youtube_access_token.length > 21 ? "playlistList" : "noAuth");
@@ -15,7 +17,7 @@ export default function YoutubeHalf() {
 
 function LoginButton() {
     return (
-        <a href="http://localhost:8888/youtube-login" id="youtube-login" className="big-link youtube-colors">
+        <a href={`${path}/youtube-login`} id="youtube-login" className="big-link youtube-colors">
             <h3>Log in with Youtube</h3>
         </a>
     );

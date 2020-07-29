@@ -7,8 +7,11 @@ const youtubeAuth = require("./endpoints/youtube-auth");
 const youtubeSearch = require("./endpoints/youtube-search");
 var app = express();
 
-app.use(express.static(__dirname + '/public'))
+app.use(express.static(__dirname + 'build'))
   .use(cors());
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 app.get('/spotify-login', spotifyAuth.login);
 app.get('/spotify-callback', spotifyAuth.callback);
@@ -16,11 +19,11 @@ app.get('/spotify-callback', spotifyAuth.callback);
 app.get('/youtube-login', youtubeAuth.login);
 app.get('/youtube-callback', youtubeAuth.callback);
 
-app.get('/youtube-search',youtubeSearch.search);
+app.get('/youtube-search', youtubeSearch.search);
 
 
 let port = process.env.PORT || 8888;
-app.listen(port,()=>{console.log(`Listening on ${port}`);});
+app.listen(port, () => { console.log(`Listening on ${port}`); });
 
 
 

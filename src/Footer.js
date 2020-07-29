@@ -17,7 +17,7 @@ function Footer() {
             </p>
             <h4>How it's made</h4>
             <p>The source code for this website is available on Github at <a id="github-link" className="small-link"
-                    href="https://github.com/EricPedley/js-spotify-converter">EricPedley/js-spotify-converter</a>. The
+                    href="https://github.com/EricPedley/js-spotify-react">EricPedley/js-spotify-converter</a>. The
                 backend for this project is nodejs and the frontend uses react. This program uses the
                 spotify api to get your playlists and the tracks in them, uses pupeteerjs, which is a headless browser, to look up each song on youtube and get its id,
                 then uses the youtube data api to add it to your youtube playlist. The headless browser roughly triples the amount of songs this website can 
