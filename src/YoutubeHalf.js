@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react"
 import PlaylistContext from "./PlaylistContext";
 import path from "./serverURL"
-
+//quota page: https://console.cloud.google.com/apis/api/youtube.googleapis.com/quotas?project=playlist-converter-2
 export default function YoutubeHalf() {
     let youtube_access_token = document.cookie.split("; ").find((row) => row.startsWith("youtube_access_token"));
     const [state, setState] = useState(youtube_access_token && youtube_access_token.length > 21 ? "playlistList" : "noAuth");
@@ -39,6 +39,7 @@ function PlaylistSelect(props) {
             console.log(json);
             var newstate = { ...state, playlists: json.items }
             if (json.error) {
+                console.log(json.error);
                 newstate = { ...newstate, error: json.error.errors[0].message }
             }
             setState(newstate);
