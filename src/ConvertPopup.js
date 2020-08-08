@@ -9,14 +9,16 @@ export default function ConvertPopup(props) {
     const tracks = playlist.tracks;
     while (tracks.length > 0) {
       const track = tracks.pop();
-      try {
-        await convertOne(track, ytID, youtube_access_token.substring(21));
-      } catch (error) {
+      const error = await convertOne(track, ytID, youtube_access_token.substring(21));
+      if (error) {
         tracks.push(track);
         console.log(playlist);
         setState("finished");
         const finished = document.getElementById("finished");
-        finished.innerHTML = "<h3>Quota Exceeded, tracks remaining:</h3>";
+        if(error==="quota error")
+          finished.innerHTML = "<h3>Quota Exceeded, tracks remaining:</h3>";//TODO: replace janky innerhtml stuff with a react component
+        else 
+          finished.innerHTML="<h3>Unknown Error, tracks remaining:</h3>";
         tracks.forEach((track) => {
           finished.innerHTML += `${track}<br>`;
         });
@@ -45,16 +47,17 @@ export default function ConvertPopup(props) {
       })
     }
     const insertres = await fetch("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet", options2).then(res => res.json());//insert track into playlist
-    if(insertres.error) {
-      if(insertres.error.message.includes("exceeded")) {
-        throw new Error("quota error");
+    if (insertres.error) {
+      if (insertres.error.message.includes("exceeded")) {
+       return "quota error";
       } else {
-        throw new Error(insertres.error.message);
+        return insertres.error.message;
       }
     }
     setState("finished");
     console.log(insertres);
-    document.getElementById("finished").innerHTML += `<div>${track}</div>`
+    document.getElementById("finished").innerHTML += `<div>${track}</div>`//TODO janky innerhtml stuff, replace with react component
+    return false;
   }
 
   return (
