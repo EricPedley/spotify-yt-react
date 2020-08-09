@@ -7,23 +7,28 @@ export default function ConvertPopup(props) {
     let youtube_access_token = document.cookie.split("; ").find((row) => row.startsWith("youtube_access_token"));
     console.log(JSON.stringify(playlist));
     const tracks = playlist.tracks;
+    let numErrors = 0;
     while (tracks.length > 0) {
-      const track = tracks.pop();
+      const track = tracks.shift();
       const error = await convertOne(track, ytID, youtube_access_token.substring(21));
       if (error) {
         tracks.push(track);
         console.log(playlist);
-        setState("finished");
-        const finished = document.getElementById("finished");
-        if(error==="quota error")
-          finished.innerHTML = "<h3>Quota Exceeded, tracks remaining:</h3>";//TODO: replace janky innerhtml stuff with a react component
-        else 
-          finished.innerHTML="<h3>Unknown Error, tracks remaining:</h3>";
-        tracks.forEach((track) => {
-          finished.innerHTML += `${track}<br>`;
-        });
-        finished.innerHTML += `<h4>JSON format:</h4><code>${JSON.stringify(playlist)}</code>`
-        break;
+        if (tracks.length === numErrors || error === "quota error") {//stop loop from running
+          setState("finished");
+          const finishedDiv = document.getElementById("finished");
+          if (error === "quota error") {//display quota error message
+            finishedDiv.innerHTML = "<h3>Quota Exceeded, tracks remaining:</h3>";//TODO: replace janky innerhtml stuff with a react component
+          } else {
+            finishedDiv.innerHTML = "<h3>Unknown Error, tracks remaining:</h3>";
+          }
+          tracks.forEach((track) => {
+            finishedDiv.innerHTML += `${track}<br>`;
+          });
+          finishedDiv.innerHTML += `<h4>JSON format:</h4><code>${JSON.stringify(playlist)}</code>`
+          break;
+        }
+        numErrors++;
       }
     }
 
@@ -46,10 +51,11 @@ export default function ConvertPopup(props) {
         }
       })
     }
+    //following line is a 404 error when deployed on heroku but not in dev server or local build
     const insertres = await fetch("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet", options2).then(res => res.json());//insert track into playlist
     if (insertres.error) {
       if (insertres.error.message.includes("exceeded")) {
-       return "quota error";
+        return "quota error";
       } else {
         return insertres.error.message;
       }
