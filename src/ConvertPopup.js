@@ -4,6 +4,7 @@ export default function ConvertPopup(props) {
   const [state, setState] = useState("button");
   console.log("rerending");
   async function convert({ playlist, ytID }) {
+    setState("finished");
     let youtube_access_token = document.cookie.split("; ").find((row) => row.startsWith("youtube_access_token"));
     console.log(JSON.stringify(playlist));
     const tracks = playlist.tracks;
@@ -15,13 +16,10 @@ export default function ConvertPopup(props) {
         tracks.push(track);
         console.log(playlist);
         if (tracks.length === numErrors || error === "quota error") {//stop loop from running
-          setState("finished");
           const finishedDiv = document.getElementById("finished");
-          if (error === "quota error") {//display quota error message
-            finishedDiv.innerHTML = "<h3>Quota Exceeded, tracks remaining:</h3>";//TODO: replace janky innerhtml stuff with a react component
-          } else {
-            finishedDiv.innerHTML = "<h3>Unknown Error, tracks remaining:</h3>";
-          }
+          finishedDiv.innerHTML = (error==="quota error")
+            ?"<h3>Quota Exceeded, tracks remaining:</h3>"
+            :"<h3>Unknown Error, tracks remaining:</h3>";
           tracks.forEach((track) => {
             finishedDiv.innerHTML += `${track}<br>`;
           });
@@ -60,7 +58,6 @@ export default function ConvertPopup(props) {
         return insertres.error.message;
       }
     }
-    setState("finished");
     console.log(insertres);
     document.getElementById("finished").innerHTML += `<div>${track}</div>`//TODO janky innerhtml stuff, replace with react component
     return false;
