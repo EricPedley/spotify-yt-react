@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import path from "./serverURL"
 export default function ConvertPopup(props) {
   const [state, setState] = useState("button");
-  console.log("rerending");
+  const [finishedTracks, setFinishedTracks] = useState([]);
+  const [header,setHeader] = useState(<h3>Converting Tracks<img id = "loading" src="images/loading.gif"></img></h3>);
+  const [codePrintout,setCodePrintout] = useState("");
   async function convert({ playlist, ytID }) {
     setState("finished");
     let youtube_access_token = document.cookie.split("; ").find((row) => row.startsWith("youtube_access_token"));
@@ -15,15 +17,17 @@ export default function ConvertPopup(props) {
       if (error) {
         tracks.push(track);
         console.log(playlist);
+        if (error === "search error: id is -1")
+          console.log(`error with searching yt video for ${track}`);
         if (tracks.length === numErrors || error === "quota error") {//stop loop from running
           const finishedDiv = document.getElementById("finished");
-          finishedDiv.innerHTML = (error==="quota error")
-            ?"<h3>Quota Exceeded, tracks remaining:</h3>"
-            :"<h3>Unknown Error, tracks remaining:</h3>";
+          setHeader( (error === "quota error")
+            ? <h3>Quota Exceeded, tracks remaining:</h3>
+            : <h3>Error, conversion stopped, tracks remaining:</h3>);
           tracks.forEach((track) => {
             finishedDiv.innerHTML += `${track}<br>`;
           });
-          finishedDiv.innerHTML += `<h4>JSON format:</h4><code>${JSON.stringify(playlist)}</code>`
+          setCodePrintout(<><h4>JSON format:</h4><code>{JSON.stringify(playlist)}</code></>);
           break;
         }
         numErrors++;
@@ -32,8 +36,11 @@ export default function ConvertPopup(props) {
 
     console.log(tracks, ytID, playlist);
   }
+
   async function convertOne(track, ytID, token) {
     const { id: vidID } = await fetch(`${path}youtube-search?term=${track}`).then(res => res.json());
+    if (vidID === -1)
+      return "search error: id is -1";
     const options2 = {
       headers: {
         Authorization: `Bearer ${token}`
@@ -49,7 +56,6 @@ export default function ConvertPopup(props) {
         }
       })
     }
-    //following line is a 404 error when deployed on heroku but not in dev server or local build
     const insertres = await fetch("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet", options2).then(res => res.json());//insert track into playlist
     if (insertres.error) {
       if (insertres.error.message.includes("exceeded")) {
@@ -66,7 +72,12 @@ export default function ConvertPopup(props) {
   return (
     <div id="convert-popup" className="big-link">
       {state === "button" && <button className="pressable big-link" id="convert-button" onClick={() => { convert(props) }}><h3>Convert</h3></button>}
-      {state === "finished" && <div id="finished"><h4>Finished Tracks:</h4></div>}
+      {state === "result-list" && <div id="popup">
+        {header}
+        {finishedTracks.map(track => <>{track}<br></br></>)}
+        {codePrintout}
+        </div>}
     </div>
   )
+
 }
