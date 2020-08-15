@@ -2,42 +2,50 @@ import React, { useState } from "react";
 import path from "./serverURL"
 export default function ConvertPopup(props) {
   const [state, setState] = useState("button");
-  const [finishedTracks, setFinishedTracks] = useState([]);
-  const [header,setHeader] = useState(<h3>Converting Tracks<img id = "loading" src="images/loading.gif"></img></h3>);
-  const [codePrintout,setCodePrintout] = useState("");
-  async function convert({ playlist, ytID }) {
-    setState("finished");
+  const [trackList, setTrackList] = useState([]);
+  const [header, setHeader] = useState(<h3>Converting Tracks<img id="loading" src="images/loading.gif"></img></h3>);
+  const [footer, setFooter] = useState();
+  async function convert({ spotifyPlaylist, ytPlaylistID }) {
     let youtube_access_token = document.cookie.split("; ").find((row) => row.startsWith("youtube_access_token"));
-    console.log(JSON.stringify(playlist));
-    const tracks = playlist.tracks;
+    console.log(JSON.stringify(spotifyPlaylist));
+    const tracks = spotifyPlaylist.tracks;
+    const finished = [];
     let numErrors = 0;
     while (tracks.length > 0) {
       const track = tracks.shift();
-      const error = await convertOne(track, ytID, youtube_access_token.substring(21));
+      const error = await convertOne(track, ytPlaylistID, youtube_access_token.substring(21));
       if (error) {
         tracks.push(track);
-        console.log(playlist);
+        console.log(spotifyPlaylist);
         if (error === "search error: id is -1")
           console.log(`error with searching yt video for ${track}`);
         if (tracks.length === numErrors || error === "quota error") {//stop loop from running
-          const finishedDiv = document.getElementById("finished");
-          setHeader( (error === "quota error")
+          setHeader((error === "quota error")
             ? <h3>Quota Exceeded, tracks remaining:</h3>
             : <h3>Error, conversion stopped, tracks remaining:</h3>);
-          tracks.forEach((track) => {
-            finishedDiv.innerHTML += `${track}<br>`;
-          });
-          setCodePrintout(<><h4>JSON format:</h4><code>{JSON.stringify(playlist)}</code></>);
+          setTrackList(tracks);
+          setFooter(<><h4>JSON format:</h4><code>{JSON.stringify(spotifyPlaylist)}</code></>);
           break;
         }
         numErrors++;
+      } else {
+        finished.push(track);
+        console.log("track being pushed",finished);
+        setTrackList(finished);
+        setFooter(finished.length);
       }
-    }
 
-    console.log(tracks, ytID, playlist);
+    }
+    setHeader(<h3>Done!</h3>);
+    setFooter(<>
+      <a className="small-link youtube-colors" target="_blank" href={`https://www.youtube.com/playlist?list=${ytPlaylistID}`}>Link to Playlist</a><br></br>
+      <a className="small-link white-background" href="/">Convert Another</a>
+    </>)
+
+    console.log(tracks, ytPlaylistID, spotifyPlaylist);
   }
 
-  async function convertOne(track, ytID, token) {
+  async function convertOne(track, ytPlaylistID, token) {
     const { id: vidID } = await fetch(`${path}youtube-search?term=${track}`).then(res => res.json());
     if (vidID === -1)
       return "search error: id is -1";
@@ -48,7 +56,7 @@ export default function ConvertPopup(props) {
       method: "POST",
       body: JSON.stringify({
         "snippet": {
-          "playlistId": ytID,
+          "playlistId": ytPlaylistID,
           "resourceId": {
             "kind": "youtube#video",
             "videoId": vidID
@@ -65,18 +73,18 @@ export default function ConvertPopup(props) {
       }
     }
     console.log(insertres);
-    document.getElementById("finished").innerHTML += `<div>${track}</div>`//TODO janky innerhtml stuff, replace with react component
     return false;
   }
 
   return (
     <div id="convert-popup" className="big-link">
-      {state === "button" && <button className="pressable big-link" id="convert-button" onClick={() => { convert(props) }}><h3>Convert</h3></button>}
+      {state === "button" && <button className="pressable big-link" id="convert-button" onClick={() => { setState("result-list"); convert(props) }}><h3>Convert</h3></button>}
       {state === "result-list" && <div id="popup">
+        {console.log("bruh")}
         {header}
-        {finishedTracks.map(track => <>{track}<br></br></>)}
-        {codePrintout}
-        </div>}
+        {footer}
+        {trackList.map((track, index) => <div key={index}>{track}</div>)}
+      </div>}
     </div>
   )
 

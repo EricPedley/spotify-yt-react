@@ -3,10 +3,9 @@ const puppeteer = require("puppeteer");
 let requests = 0;
 module.exports = {
     search: async (req, res) => {
-        console.log(req.query.term);
-        console.log(++requests)
+        console.log(`starting ${req.query.term} (request #${requests++})`);
         const id = await search(req.query.term);
-        console.log(req.query.term + " : " + id);
+        console.log(`finished ${req.query.term}, id is ${id}`);
         res.send({ id: id });
     }
 }

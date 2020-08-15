@@ -16,7 +16,7 @@ function Footer() {
                 per day. If the quota is filled you will see an error message and have to wait to transfer your songs.
             </p>
             <h4>How it's made</h4>
-            <p>The source code for this website is available on Github at <a id="github-link" className="small-link"
+            <p>The source code for this website is available on Github at <a className="small-link white-background"
                     href="https://github.com/EricPedley/js-spotify-react">EricPedley/js-spotify-converter</a>. The
                 backend for this project is nodejs and the frontend uses react. This program uses the
                 spotify api to get your playlists and the tracks in them, uses pupeteerjs, which is a headless browser, to look up each song on youtube and get its id,

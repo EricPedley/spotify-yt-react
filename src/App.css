@@ -74,7 +74,6 @@ body {
   color:white;
 }
 #popup {
-  display:none;
   position:fixed;
   padding-top:10px;
   top:30%;
@@ -108,7 +107,7 @@ body {
 #bottom-section {
   background-color:#121212;
 }
-#github-link {
+.white-background {
   color:#121212;
   background-color:#FFFFFF;
   padding:0px 2px;

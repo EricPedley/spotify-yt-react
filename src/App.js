@@ -24,7 +24,7 @@ export default function App() {
             <SpotifyHalf />
             <YoutubeHalf />
           </PlaylistContext.Provider>
-          {readyToConvert && <ConvertPopup ytID={state.ytID} playlist={state.playlist}></ConvertPopup>}
+          {readyToConvert && <ConvertPopup ytPlaylistID={state.ytID} spotifyPlaylist={state.playlist}></ConvertPopup>}
         </div>
         <div className="row">
           <div className="col-md-6 spotify-colors color-bar"></div>
