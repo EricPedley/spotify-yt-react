@@ -32,12 +32,13 @@ export default function SpotifyHalf() {
     if (spotify_access_token && !spotify_access_token.length > 21)
         spotify_access_token = undefined;
     const [state, setState] = useState(spotify_access_token ? "playlistList" : "noAuth");
+    const [playlist, setPlaylist] = useState();
     return (
         <div className="col-md-6 half left-half">
             {state === "noAuth" && <LoginButtons setParentState={setState} />}
             {state === "ImportControls" && <ImportControls setParentState={setState} />}
-            {state === "playlistList" && <PlaylistList setParentState={setState} />}
-            {state === "playlist" && <Playlist setParentState={setState} />}
+            {state === "playlistList" && <PlaylistList setParentState={setState} setPlaylist={setPlaylist} />}
+            {state === "playlist" && <Playlist setParentState={setState} playlist={playlist} />}
         </div>
     );
 }
@@ -95,21 +96,21 @@ function ImportControls(props) {
         props.setParentState("noAuth");
     }
 }
-function PlaylistList(props) {
+function PlaylistList({ setParentState, setPlaylist }) {
     const [state, setState] = useState({ userName: "loading", playlists: [{ name: "loading", id: -1 }] });
     const [context, setContext] = useContext(PlaylistContext);
     useEffect(() => {
         let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
-        if(spotify_access_token) {
-            if(spotify_access_token.length>21) {
+        if (spotify_access_token) {
+            if (spotify_access_token.length > 21) {
                 spotify_access_token = spotify_access_token.substring(21);
                 if (state.userName === "loading")
                     getPlaylists(spotify_access_token).then(({ userName, playlists }) => { setState({ userName: userName, playlists: playlists }) });
             } else {
                 spotify_access_token = undefined;
-                props.setParentState("noAuth")
+                setParentState("noAuth")
             }
-        } 
+        }
     });
     return (
 
@@ -122,7 +123,7 @@ function PlaylistList(props) {
         </div>
     )
     function goBack() {
-        props.setParentState("noAuth");
+        setParentState("noAuth");
     }
     function selectPlaylist(id, name) {
         let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
@@ -132,26 +133,25 @@ function PlaylistList(props) {
             }
         }
         pagerReq(`https://api.spotify.com/v1/playlists/${id}/tracks`, options).then((items) => {
-            setContext({
-                ...context,
-                playlist: {
-                    name: name,
-                    tracks: items.map((item) => item.track.artists.reduce(((prev, curr) => `${prev}${curr.name} `), "") + `- ${item.track.name}`)
-                }
-            });
-            props.setParentState("playlist");
+            const playlist = {
+                name: name,
+                tracks: items.map((item) => item.track.artists.reduce(((prev, curr) => `${prev}${curr.name} `), "") + `- ${item.track.name}`)
+            }
+            setPlaylist(playlist);
+            setContext({ ...context, playlist });
+            setParentState("playlist");
         });
     }
 
 }
 
-function Playlist(props) {
+function Playlist({ setParentState, playlist }) {
     const [context, setContext] = useContext(PlaylistContext);
-    const playlist = context.playlist;
-    console.log(playlist);
+    const [selected, setSelected] = useState(new Array(playlist.tracks.length).fill(true));//initializes array of all true values
+    console.log(selected);
     function goBack() {
         setContext({ ...context, playlist: null });
-        props.setParentState("playlistList");
+        setParentState("playlistList");
     }
     return (
         <div className="left-align">
@@ -159,7 +159,14 @@ function Playlist(props) {
                 <h2 className="large-text">{`Tracks in ${playlist.name}`}</h2>
                 <button className="pressable small-link logout-button" onClick={goBack}>Back</button>
             </div>
-            {playlist.tracks.map((track, index) => <div key={index}>{track}</div>)}
+            {playlist.tracks.map((track, index) => <div key={index}>{track}
+                <input onChange={() => {
+                    selected[index] = !selected[index];
+                    setSelected(selected.slice());//passes copy of array into state
+                    console.log(`box ${index} clicked(${track})`)
+                }}
+                    type="checkbox" defaultChecked={true}></input>
+            </div>)}
         </div>
     )
 }

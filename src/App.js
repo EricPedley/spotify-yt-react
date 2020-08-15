@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import './App.css';
 import Header from "./Header";
 import Footer from "./Footer";
 import SpotifyHalf from "./SpotifyHalf";
 import YoutubeHalf from "./YoutubeHalf";
-import PlaylistContext from "./PlaylistContext";
+import PlaylistContext, {PlaylistContextProvider} from "./PlaylistContext";
 import ConvertPopup from "./ConvertPopup";
 
 export default function App() {
-  const [state, setState] = useState({});
-  console.log("app rendering with state", state);
+  const context = useContext(PlaylistContext);
+  console.log("app rendering with state", context);
   let readyToConvert = false;
-  if (state.ytID && state.playlist) {
+  if (context.ytPlaylistID && context.spotifyPlaylist) {
     readyToConvert = true;
     console.log("ready to convert");
   }
@@ -20,11 +20,11 @@ export default function App() {
       <Header />
       <div className="container-fluid">
         <div className="row align-items-center" id="main">
-          <PlaylistContext.Provider value={[state, setState]}>
+          <PlaylistContextProvider>
             <SpotifyHalf />
             <YoutubeHalf />
-          </PlaylistContext.Provider>
-          {readyToConvert && <ConvertPopup ytPlaylistID={state.ytID} spotifyPlaylist={state.playlist}></ConvertPopup>}
+            {readyToConvert && <ConvertPopup></ConvertPopup>}
+          </PlaylistContextProvider>
         </div>
         <div className="row">
           <div className="col-md-6 spotify-colors color-bar"></div>
