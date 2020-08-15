@@ -30,9 +30,7 @@ export default function ConvertPopup(props) {
         numErrors++;
       } else {
         finished.push(track);
-        console.log("track being pushed",finished);
-        setTrackList(finished);
-        setFooter(finished.length);
+        setTrackList([...finished]);
       }
 
     }
