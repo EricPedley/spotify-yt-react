@@ -25,7 +25,7 @@ function LoginButton() {
 
 function PlaylistSelect(props) {
     const [state, setState] = useState({});
-    const [context, setContext] = useContext(PlaylistContext);
+    const {ytPlaylistID,setYTPlaylistID} = useContext(PlaylistContext);
     const options = {
         headers: {
             Authorization: `Bearer ${props.token}`
@@ -59,7 +59,7 @@ function PlaylistSelect(props) {
                     <button className="pressable small-link logout-button" onClick={logOut}>Log Out</button>
                 </div>
                 {state.playlists.map((playlist) => (
-                    <button onClick={() => { setSelected(playlist.id) }} className={`pressable small-link playlist-button ${(context.ytID === playlist.id ? "youtube-colors" : "no-background")}`} key={playlist.id}>{playlist.snippet.title}</button>
+                    <button onClick={() => { setSelected(playlist.id) }} className={`pressable small-link playlist-button ${(ytPlaylistID === playlist.id ? "youtube-colors" : "no-background")}`} key={playlist.id}>{playlist.snippet.title}</button>
                 ))}</>}
 
         </div>
@@ -68,14 +68,13 @@ function PlaylistSelect(props) {
 
     function setSelected(id) {
         console.log("setting selected for "+id)
-        setContext({...context, ytID:id });
-        console.log(context);
+        setYTPlaylistID(id);
     }
 
     function logOut() {
         document.cookie = new URLSearchParams({ youtube_access_token: "" });
         props.setParentState("noAuth");
-        setContext({ ...context, ytID: null });
+        setYTPlaylistID(null);
     }
 
 }

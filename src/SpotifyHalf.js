@@ -79,7 +79,7 @@ function LoginButtons(props) {
 
 function ImportControls(props) {
     const [state, setState] = useState("");
-    const [context, setContext] = useContext(PlaylistContext);
+    const {setSpotifyPlaylist} = useContext(PlaylistContext);
     return (
         <>
             <div>
@@ -88,7 +88,7 @@ function ImportControls(props) {
             </div>
             <form>
                 <code><textarea wrap="soft" onChange={(event) => { setState(event.target.value) }} id="spotify-import" value={state}></textarea></code>
-                <input type="submit" className="pressable small-link" id="import-submit" onClick={() => { setContext({ ...context, playlist: JSON.parse(state) }); props.setParentState("playlist") }} value="Import Playlist"></input>
+                <input type="submit" className="pressable small-link" id="import-submit" onClick={() => { setSpotifyPlaylist(JSON.parse(state)); props.setParentState("playlist");}} value="Import Playlist"></input>
             </form>
         </>
     )
@@ -98,7 +98,7 @@ function ImportControls(props) {
 }
 function PlaylistList({ setParentState, setPlaylist }) {
     const [state, setState] = useState({ userName: "loading", playlists: [{ name: "loading", id: -1 }] });
-    const [context, setContext] = useContext(PlaylistContext);
+    const {setSpotifyPlaylist} = useContext(PlaylistContext);
     useEffect(() => {
         let spotify_access_token = document.cookie.split("; ").find((row) => row.startsWith("spotify_access_token"));
         if (spotify_access_token) {
@@ -138,7 +138,7 @@ function PlaylistList({ setParentState, setPlaylist }) {
                 tracks: items.map((item) => item.track.artists.reduce(((prev, curr) => `${prev}${curr.name} `), "") + `- ${item.track.name}`)
             }
             setPlaylist(playlist);
-            setContext({ ...context, playlist });
+            setSpotifyPlaylist(playlist);
             setParentState("playlist");
         });
     }
@@ -146,12 +146,19 @@ function PlaylistList({ setParentState, setPlaylist }) {
 }
 
 function Playlist({ setParentState, playlist }) {
-    const [context, setContext] = useContext(PlaylistContext);
+    const {setSpotifyPlaylist, setSelectedSpotifyTracks} = useContext(PlaylistContext);
     const [selected, setSelected] = useState(new Array(playlist.tracks.length).fill(true));//initializes array of all true values
-    console.log(selected);
+
     function goBack() {
-        setContext({ ...context, playlist: null });
+        setSpotifyPlaylist(null)
         setParentState("playlistList");
+    }
+    function deselectAll() {
+        setSelected(new Array(playlist.tracks.length).fill(false))
+    }
+    function selectAll() {
+        setSelected(new Array(playlist.tracks.length).fill(true))
+
     }
     return (
         <div className="left-align">
@@ -159,14 +166,17 @@ function Playlist({ setParentState, playlist }) {
                 <h2 className="large-text">{`Tracks in ${playlist.name}`}</h2>
                 <button className="pressable small-link logout-button" onClick={goBack}>Back</button>
             </div>
-            {playlist.tracks.map((track, index) => <div key={index}>{track}
+            {playlist.tracks.map((track, index) => <div  key={index}>{track}
                 <input onChange={() => {
                     selected[index] = !selected[index];
                     setSelected(selected.slice());//passes copy of array into state
+                    setSelectedSpotifyTracks(selected)
                     console.log(`box ${index} clicked(${track})`)
                 }}
-                    type="checkbox" defaultChecked={true}></input>
+                    type="checkbox" checked={selected[index]}></input>
             </div>)}
+            <button onClick={deselectAll}>Deselect All</button>
+            <button onClick={selectAll}>Select All</button>
         </div>
     )
 }

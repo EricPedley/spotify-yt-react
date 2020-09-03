@@ -1,18 +1,25 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import path from "./serverURL"
+
 export default function ConvertPopup(props) {
+
   const [state, setState] = useState("button");
   const [trackList, setTrackList] = useState([]);
-  const [header, setHeader] = useState(<h3>Converting Tracks<img id="loading" src="images/loading.gif"></img></h3>);
+  const [header, setHeader] = useState(<h3>Converting Tracks<img id="loading" alt = "loading icon" src="images/loading.gif"></img></h3>);
   const [footer, setFooter] = useState();
-  async function convert({ spotifyPlaylist, ytPlaylistID }) {
+
+  async function convert({spotifyPlaylist, selectedSpotifyTracks,ytPlaylistID}) {
     let youtube_access_token = document.cookie.split("; ").find((row) => row.startsWith("youtube_access_token"));
     console.log(JSON.stringify(spotifyPlaylist));
     const tracks = spotifyPlaylist.tracks;
     const finished = [];
     let numErrors = 0;
+    let index=-1;//starts at -1 because it's incremented before use
     while (tracks.length > 0) {
       const track = tracks.shift();
+      index++;
+      if(!selectedSpotifyTracks[index])
+        continue;
       const error = await convertOne(track, ytPlaylistID, youtube_access_token.substring(21));
       if (error) {
         tracks.push(track);
@@ -38,7 +45,7 @@ export default function ConvertPopup(props) {
     setFooter(<>
       <a className="small-link youtube-colors" target="_blank" href={`https://www.youtube.com/playlist?list=${ytPlaylistID}`}>Link to Playlist</a><br></br>
       <a className="small-link white-background" href="/">Convert Another</a>
-    </>)
+    </>);
 
     console.log(tracks, ytPlaylistID, spotifyPlaylist);
   }
@@ -78,7 +85,6 @@ export default function ConvertPopup(props) {
     <div id="convert-popup" className="big-link">
       {state === "button" && <button className="pressable big-link" id="convert-button" onClick={() => { setState("result-list"); convert(props) }}><h3>Convert</h3></button>}
       {state === "result-list" && <div id="popup">
-        {console.log("bruh")}
         {header}
         {footer}
         {trackList.map((track, index) => <div key={index}>{track}</div>)}

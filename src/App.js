@@ -8,13 +8,6 @@ import PlaylistContext, {PlaylistContextProvider} from "./PlaylistContext";
 import ConvertPopup from "./ConvertPopup";
 
 export default function App() {
-  const context = useContext(PlaylistContext);
-  console.log("app rendering with state", context);
-  let readyToConvert = false;
-  if (context.ytPlaylistID && context.spotifyPlaylist) {
-    readyToConvert = true;
-    console.log("ready to convert");
-  }
   return (
     <>
       <Header />
@@ -23,7 +16,7 @@ export default function App() {
           <PlaylistContextProvider>
             <SpotifyHalf />
             <YoutubeHalf />
-            {readyToConvert && <ConvertPopup></ConvertPopup>}
+            <ConvertPopupDisplayer></ConvertPopupDisplayer>
           </PlaylistContextProvider>
         </div>
         <div className="row">
@@ -34,4 +27,12 @@ export default function App() {
       <Footer />
     </>
   );
+}
+
+function ConvertPopupDisplayer(props) {
+  const {spotifyPlaylist,selectedSpotifyTracks,ytPlaylistID} = useContext(PlaylistContext);
+  if(!(spotifyPlaylist&&ytPlaylistID))
+    return <></>;
+  else
+    return <ConvertPopup spotifyPlaylist={spotifyPlaylist} ytPlaylistID={ytPlaylistID} selectedSpotifyTracks = {selectedSpotifyTracks}></ConvertPopup>
 }
