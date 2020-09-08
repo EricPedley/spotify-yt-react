@@ -1,7 +1,9 @@
 import React, { useState,useContext } from "react";
 import path from "./serverURL"
+import QuotaContext from "./QuotaContext";
 
 export default function ConvertPopup(props) {
+  const {quota,setQuota} = useContext(QuotaContext);
 
   const [state, setState] = useState("button");
   const [trackList, setTrackList] = useState([]);
@@ -14,6 +16,7 @@ export default function ConvertPopup(props) {
     const tracks = spotifyPlaylist.tracks;
     const finished = [];
     let numErrors = 0;
+    let currentQuota = quota;
     let index=-1;//starts at -1 because it's incremented before use
     while (tracks.length > 0) {
       const track = tracks.shift();
@@ -36,6 +39,9 @@ export default function ConvertPopup(props) {
         }
         numErrors++;
       } else {
+        fetch(`${path}quota-count?cost=50`,{method:"POST"});
+        currentQuota-=50;
+        setQuota(currentQuota);
         finished.push(track);
         setTrackList([...finished]);
       }
