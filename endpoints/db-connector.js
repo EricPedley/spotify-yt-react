@@ -1,9 +1,7 @@
 //6qTykVhCrN3c3yBz
 
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://admin:6qTykVhCrN3c3yBz@spotify-yt-converter.g0nux.azure.mongodb.net"//process.env.MONGO_URL;
-
-
+const uri = process.env.MONGO_URL;
 module.exports = {
     get: (req, res) => {
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
