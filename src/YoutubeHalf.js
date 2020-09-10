@@ -34,6 +34,7 @@ function PlaylistSelect(props) {
     useEffect(() => {
         async function fetchPlaylists() {
             const res = await fetch("https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true", options);
+            fetch(`${path}quota-count?cost=1`,{method:"POST"});
             console.log(res);
             const json = await res.json();
             console.log(json);
