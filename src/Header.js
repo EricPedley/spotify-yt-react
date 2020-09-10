@@ -18,11 +18,11 @@ function Header() {
                     <div className="col-9">
                         <h1>Spotify To Youtube Playlist Converter</h1>
                         <div id='instructions'>{instructions}</div>
+                        Quota Total: {quota}/10000 Units
                     </div>
                 </div>
             </div>
             <div style={{border: "solid gray 2px"}}>
-                <div style={{color:"#000000",position:"absolute",textAlign:"center",width:"99%"}}>Quota Total: {quota}/10000 Units</div>
                 <div style={{ backgroundColor: getHSLString(), height:"1.5em", width: `${quota / 100}%` }}></div>
             </div>
         </div >
