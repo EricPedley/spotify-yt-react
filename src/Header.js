@@ -18,7 +18,7 @@ function Header() {
                     <div className="col-9">
                         <h1>Spotify To Youtube Playlist Converter</h1>
                         <div id='instructions'>{instructions}</div>
-                        Quota Total: {quota}/10000 Units
+                        <div>Quota Total: {typeof quota =="string" && quota}/10000 Units</div>
                     </div>
                 </div>
             </div>
