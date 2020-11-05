@@ -5,6 +5,7 @@ const cors = require('cors');
 const spotifyAuth = require("./endpoints/spotify-auth");
 const youtubeAuth = require("./endpoints/youtube-auth");
 const youtubeSearch = require("./endpoints/youtube-search");
+const {refresh} = require("./endpoints/youtube-refresher");
 const dbConnector = require("./endpoints/db-connector");
 var app = express();
 
@@ -21,6 +22,8 @@ app.get('/youtube-search', youtubeSearch.search);
 
 app.get('/quota-count', dbConnector.get);
 app.post('/quota-count', dbConnector.post);
+
+app.get('/refresh-youtube-api', refresh);
 
 let port = process.env.PORT || 8888;
 app.listen(port, () => { console.log(`Listening on ${port}`); });
