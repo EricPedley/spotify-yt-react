@@ -26,13 +26,13 @@ function LoginButton() {
 function PlaylistSelect(props) {
     const [state, setState] = useState({});
     const {ytPlaylistID,setYTPlaylistID} = useContext(PlaylistContext);
-    const options = {
-        headers: {
-            Authorization: `Bearer ${props.token}`
-        }
-    };
     useEffect(() => {
         async function fetchPlaylists() {
+            const options = {
+                headers: {
+                    Authorization: `Bearer ${props.token}`
+                }
+            };
             const res = await fetch("https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true", options);
             fetch(`${path}quota-count?cost=1`,{method:"POST"});
             console.log(res);
