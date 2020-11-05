@@ -33,10 +33,19 @@ function PlaylistSelect(props) {
                     Authorization: `Bearer ${props.token}`
                 }
             };
-            const res = await fetch("https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true", options);
+            async function pageRequest(url,options,offset) {
+                const res = await fetch(url, options);
+                const json = await res.json();
+                console.log(json)
+                const nextPageToken = json.nextPageToken;
+                if(nextPageToken){
+                    const nextReq = await pageRequest(`${url}&pageToken=${nextPageToken}`,options)
+                    return {...json, items: [...json.items, ...nextReq.items]}
+                }
+                return json;
+            }
+            const json = await pageRequest("https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true",options,0);
             fetch(`${path}quota-count?cost=1`,{method:"POST"});
-            console.log(res);
-            const json = await res.json();
             console.log(json);
             var newstate = { ...state, playlists: json.items }
             if (json.error) {
