@@ -24,9 +24,9 @@ module.exports = {
             }
         });
     },
-    patch: (req, res) => {//this is called when a youtube api call is made, and one of the url params is the amount of units spent
+    post: (req, res) => {//this is called when a youtube api call is made, and one of the url params is the amount of units spent
         const cost = req.query.cost;
-        console.log(cost);
+        console.log("quota call with cost " + cost);
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
         client.connect(async err => {
             if (err)

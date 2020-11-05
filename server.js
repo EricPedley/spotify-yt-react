@@ -20,7 +20,7 @@ app.get('/youtube-callback', youtubeAuth.callback);
 app.get('/youtube-search', youtubeSearch.search);
 
 app.get('/quota-count', dbConnector.get);
-app.post('/quota-count', dbConnector.patch);
+app.post('/quota-count', dbConnector.post);
 
 let port = process.env.PORT || 8888;
 app.listen(port, () => { console.log(`Listening on ${port}`); });
