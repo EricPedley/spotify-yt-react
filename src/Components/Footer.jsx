@@ -14,6 +14,9 @@ function Footer() {
                 and listing a user's YT playlists costs 1 unit, so the website as a whole can only process a bit less than 200
                 songs
                 per day. If the quota is all used up you will see an error message and have to wait to transfer your songs.
+                Occasionally the project's quota is set to zero automatically by Google. I don't know why this happens, but when it does
+                I have to make a new Google Cloud project and update the API keys. If the quota display on the website says it's full, but 
+                you're getting an error about the quota, <a style = {{color:"#1ed760"}}href = "https://github.com/EricPedley/spotify-yt-react/issues" >post an issue on the github repo</a> and I'll look into fixing it.
             </p>
             <h4>How it's made</h4>
             <p>The source code for this website is available on Github at <a className="small-link white-background"
