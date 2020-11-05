@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
-import PlaylistContext from "./PlaylistContext";
-import path from "./serverURL"
+import PlaylistContext from "./PlaylistContext.jsx";
+import path from "../serverURL"
 
 async function getPlaylists(access_token) {
     const options = {

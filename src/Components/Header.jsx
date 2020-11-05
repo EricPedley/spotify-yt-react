@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
-import path from "./serverURL"
-import QuotaContext from "./QuotaContext";
+import path from "../serverURL"
+import QuotaContext from "./QuotaContext.jsx";
 
 function Header() {
     const { quota, setQuota } = useContext(QuotaContext);
@@ -18,7 +18,7 @@ function Header() {
                     <div className="col-9">
                         <h1>Spotify To Youtube Playlist Converter</h1>
                         <div id='instructions'>{instructions}</div>
-                        <div>Quota Total: {typeof quota =="number" && quota}/10000 Units</div>
+                        <div>Quota Total: {typeof quota =="number" && quota || "loading..."}/10000 Units</div>
                     </div>
                 </div>
             </div>

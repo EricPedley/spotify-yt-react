@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
 import './App.css';
-import Header from "./Header";
-import Footer from "./Footer";
-import SpotifyHalf from "./SpotifyHalf";
-import YoutubeHalf from "./YoutubeHalf";
-import PlaylistContext, { PlaylistContextProvider } from "./PlaylistContext";
-import QuotaContext, { QuotaContextProvider } from "./QuotaContext";
-import ConvertPopup from "./ConvertPopup";
+import Header from "./Components/Header.jsx";
+import Footer from "./Components/Footer.jsx";
+import SpotifyHalf from "./Components/SpotifyHalf.jsx";
+import YoutubeHalf from "./Components/YoutubeHalf.jsx";
+import PlaylistContext, { PlaylistContextProvider } from "./Components/PlaylistContext.jsx";
+import { QuotaContextProvider } from "./Components/QuotaContext.jsx";
+import ConvertPopup from "./Components/ConvertPopup.jsx";
 
 export default function App() {
   return (

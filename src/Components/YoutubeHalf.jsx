@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react"
-import PlaylistContext from "./PlaylistContext";
-import path from "./serverURL"
+import PlaylistContext from "./PlaylistContext.jsx";
+import path from "../serverURL"
 //quota page: https://console.cloud.google.com/apis/api/youtube.googleapis.com/quotas?project=playlist-converter-2
 export default function YoutubeHalf() {
     let youtube_access_token = document.cookie.split("; ").find((row) => row.startsWith("youtube_access_token"));

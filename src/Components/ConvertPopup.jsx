@@ -1,6 +1,6 @@
 import React, { useState,useContext } from "react";
-import path from "./serverURL"
-import QuotaContext from "./QuotaContext";
+import path from "../serverURL"
+import QuotaContext from "./QuotaContext.jsx";
 
 export default function ConvertPopup(props) {
   const {quota,setQuota} = useContext(QuotaContext);
