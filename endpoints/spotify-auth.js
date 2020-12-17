@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 const spotify_client_id = process.env.SPOTIFY_CLIENT_ID; // Your client id
 const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-const spotify_redirect_uri = process.env.SPOTIFY_REDIRECT_URI; // Your redirect uri
+const spotify_redirect_uri = process.env.SPOTIFY_REDIRECT_URI||`${process.env.VERCEL_URL}/youtube-callback`; // Your redirect uri
 module.exports = {
     login: (req, res) => {
         const scope = 'playlist-read-private';

@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const youtube_client_id = process.env.YOUTUBE_CLIENT_ID;
-const youtube_redirect_uri = process.env.YOUTUBE_REDIRECT_URI;
+const youtube_redirect_uri = process.env.YOUTUBE_REDIRECT_URI||`${process.env.VERCEL_URL}/youtube-callback`;
 const youtube_client_secret = process.env.YOUTUBE_CLIENT_SECRET;
 module.exports = {
     login: function (req, res) {
