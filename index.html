@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Loading page</title>
+</head>
+
+<body style=' font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji",";Segoe UI Emoji","Segoe UI Symbol";
+font-size: 14px;'>
+    <div>
+        <div id='text' style='text-align: center; padding-top: 40vh;'>Loading site. This may take up to 30 seconds. Once it's done loading this message will be replaced by a link to the site</div>
+    </div>
+    <script>
+        function writeText(text) {
+            document.querySelector('#text').innerHTML = text
+        }
+        fetch('https://spotify-yt-converter.herokuapp.com/', { mode: 'no-cors' }).then(res => res.text())
+        .then((text) => writeText('Site loaded:<br> <a href = "https://spotify-yt-converter.herokuapp.com/"> https://spotify-yt-converter.herokuapp.com</a>'))
+        .catch((err) => writeText('something went wrong'))
+    </script>
+
+
+</body>
+
+</html>
