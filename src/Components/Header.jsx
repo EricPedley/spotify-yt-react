@@ -5,7 +5,7 @@ import QuotaContext from "./QuotaContext.jsx";
 function Header() {
     const { quota, setQuota } = useContext(QuotaContext);
     const [instructions,] = useState("Log in to select playlists");
-    useEffect(() => { fetch(`${path}quota-count`).then(res => res.json()).then(setQuota); }, []);
+    useEffect(() => { fetch(`${path}quota-count`).then(res => res.json()).then(setQuota); });
     function getHSLString() {
         const percent = quota / 10000;
         return `hsl(${141 * percent},${76 + 24 * (1 - percent)}%, ${48 + 2 * (1 - percent)}%)`
@@ -18,7 +18,7 @@ function Header() {
                     <div className="col-9">
                         <h1>Spotify To Youtube Playlist Converter</h1>
                         <div id='instructions'>{instructions}</div>
-                        <div>Quota Total: {typeof quota =="number" && quota || "loading..."}/10000 Units</div>
+                        <div>Quota Total: {typeof quota =="number" ? quota : "loading..."}/10000 Units</div>
                     </div>
                 </div>
             </div>

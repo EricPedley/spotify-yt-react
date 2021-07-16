@@ -148,7 +148,7 @@ function PlaylistList({ setParentState, setPlaylist }) {
 function Playlist({ setParentState, playlist }) {
     const {setSpotifyPlaylist, setSelectedSpotifyTracks} = useContext(PlaylistContext);
     const [selected, setSelected] = useState(new Array(playlist.tracks.length).fill(true));//initializes array of all true values
-    useEffect(()=>{setSelectedSpotifyTracks(selected);},[])
+    useEffect(()=>{setSelectedSpotifyTracks(selected);},[selected,setSelectedSpotifyTracks])
     function goBack() {
         setSpotifyPlaylist(null)
         setParentState("playlistList");

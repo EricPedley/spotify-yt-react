@@ -23,14 +23,14 @@ function LoginButton() {
     );
 }
 
-function PlaylistSelect(props) {
-    const [state, setState] = useState({});
+function PlaylistSelect({token,setParentState}) {
+    const [state, setState] = useState({});//contains playlist and error messages?
     const {ytPlaylistID,setYTPlaylistID} = useContext(PlaylistContext);
     useEffect(() => {
         async function fetchPlaylists() {
             const options = {
                 headers: {
-                    Authorization: `Bearer ${props.token}`
+                    Authorization: `Bearer ${token}`
                 }
             };
             async function pageRequest(url,options,offset) {
@@ -57,7 +57,8 @@ function PlaylistSelect(props) {
 
         }
         fetchPlaylists();
-    }, []);
+    //eslint-disable-next-line
+    },[]);//the dependency list is included and left empty on purpose because this useEffect should only run once, so the lint ignore is added
     
     return (
         <div className="left-align">
@@ -83,7 +84,7 @@ function PlaylistSelect(props) {
 
     function logOut() {
         document.cookie = new URLSearchParams({ youtube_access_token: "" });
-        props.setParentState("noAuth");
+        setParentState("noAuth");//function taken from props
         setYTPlaylistID(null);
     }
 

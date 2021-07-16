@@ -49,7 +49,7 @@ export default function ConvertPopup(props) {
     }
     setHeader(<h3>Done!</h3>);
     setFooter(<>
-      <a className="small-link youtube-colors" target="_blank" href={`https://www.youtube.com/playlist?list=${ytPlaylistID}`}>Link to Playlist</a><br></br>
+      <a className="small-link youtube-colors" target="_blank" rel="noopener noreferrer" href={`https://www.youtube.com/playlist?list=${ytPlaylistID}`}>Link to Playlist</a><br></br>
       <a className="small-link white-background" href="/">Convert Another</a>
     </>);
 
