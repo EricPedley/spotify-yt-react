@@ -33,7 +33,7 @@ function PlaylistSelect({token,setParentState}) {
                     Authorization: `Bearer ${token}`
                 }
             };
-            async function pageRequest(url,options,offset) {
+            async function pageRequest(url,options) {
                 const res = await fetch(url, options);
                 const json = await res.json();
                 console.log(json)
@@ -44,17 +44,16 @@ function PlaylistSelect({token,setParentState}) {
                 }
                 return json;
             }
-            const json = await pageRequest("https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true",options,0);
+            const json = await pageRequest("https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true",options);
             fetch(`${path}youtube/quota?cost=1`,{method:"POST"});
             console.log(json);
-            var newstate = { ...state, playlists: json.items }
+            var newstate = { ...state, playlists: json.items };
             if (json.error) {
                 console.log(json.error);
                 newstate = { ...newstate, error: json.error.errors[0].message }
             }
             setState(newstate);
             console.log("setting state", state);
-
         }
         fetchPlaylists();
     //eslint-disable-next-line
@@ -63,7 +62,15 @@ function PlaylistSelect({token,setParentState}) {
     return (
         <div className="left-align">
             {!state.playlists && !state.error && <h2>Loading...</h2>}
-            {state.error && <h2 dangerouslySetInnerHTML={{ __html: state.error }}></h2>}
+            {state.error && <>
+                <h2 dangerouslySetInnerHTML={{ __html: state.error }}></h2>
+                <h3>
+                    Something went wrong. Please submit an issue at<br/>
+                    <a href="https://github.com/EricPedley/spotify-yt-react/issues/new/choose" target="_blank" rel="noopener noreferrer">
+                        https://github.com/EricPedley/spotify-yt-react/issues/new/choose
+                    </a>
+                </h3>
+            </>}
             {state.playlists && <>
                 <div>
                     <h2 className="large-text">Logged in as {state.playlists[0].snippet.channelTitle}</h2>
