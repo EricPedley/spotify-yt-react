@@ -1,6 +1,6 @@
 # Spotify to YouTube Playlist Converter
 ![project screenshot](https://user-images.githubusercontent.com/48658337/125008966-7a434d00-e018-11eb-91a2-2d8c621cd96c.jpg)
-[Demo Link](https://ericpedley.github.io/spotify-yt-react/)
+[Demo Link](https://spotify-yt-react.vercel.app/)
 ## Description:
   This project is a website that adds songs from a Spotify playlist into a YouTube playlist. The frontend is made with React and the backend is NodeJS with Express. It uses the Spotify API to get a user's playlists and uses PuppeteerJS on the server to search for the corresponding YouTube videos, and then uses the YouTube API to add them to a playlist. It uses MongoDB to store usage data for how much API quota is remaining.
   
