@@ -39,7 +39,7 @@ export default function ConvertPopup(props) {
         }
         numErrors++;
       } else {
-        fetch(`${path}quota-count?cost=50`,{method:"POST"});
+        fetch(`${path}youtube/quota?cost=50`,{method:"POST"});
         currentQuota-=50;
         setQuota(currentQuota);
         finished.push(track);
@@ -57,7 +57,7 @@ export default function ConvertPopup(props) {
   }
 
   async function convertOne(track, ytPlaylistID, token) {
-    const { id: vidID } = await fetch(`${path}youtube-search?term=${track}`).then(res => res.json());
+    const { id: vidID } = await fetch(`${path}youtube/search?term=${track}`).then(res => res.json());
     if (vidID === -1)
       return "search error: id is -1";
     const options2 = {

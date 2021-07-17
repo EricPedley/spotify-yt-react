@@ -17,7 +17,7 @@ export default function YoutubeHalf() {
 
 function LoginButton() {
     return (
-        <a href={`${path}youtube-login`} id="youtube-login" className="big-link youtube-colors">
+        <a href={`${path}youtube/login`} id="youtube-login" className="big-link youtube-colors">
             <h3>Log in with Youtube</h3>
         </a>
     );
@@ -45,7 +45,7 @@ function PlaylistSelect({token,setParentState}) {
                 return json;
             }
             const json = await pageRequest("https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true",options,0);
-            fetch(`${path}quota-count?cost=1`,{method:"POST"});
+            fetch(`${path}youtube/quota?cost=1`,{method:"POST"});
             console.log(json);
             var newstate = { ...state, playlists: json.items }
             if (json.error) {
