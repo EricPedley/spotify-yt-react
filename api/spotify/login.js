@@ -1,9 +1,9 @@
-const protocol = require("../protocol");
+const base = require("../baseURL");
 export default (req, res) => {
     const scope = 'playlist-read-private';
     const params = {
         client_id: process.env.SPOTIFY_CLIENT_ID,
-        redirect_uri: `${protocol}://${process.env.VERCEL_URL}/api/spotify/callback`,
+        redirect_uri: `${base}/api/spotify/callback`,
         response_type: 'code',
         scope: scope
     }

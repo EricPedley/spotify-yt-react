@@ -1,9 +1,9 @@
-const protocol = require("../protocol");
+const base = require("../baseURL");
 export default (req, res) => {
     const scope = "https://www.googleapis.com/auth/youtube.force-ssl"//TODO change scope to use incremental auth: https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps#incrementalAuth
     const params = {
         client_id: process.env.YOUTUBE_CLIENT_ID,
-        redirect_uri: `${protocol}://${process.env.VERCEL_URL}/api/youtube/callback`,
+        redirect_uri: `${base}/api/youtube/callback`,
         response_type: "code",
         scope: scope
     };
