@@ -23,34 +23,39 @@ export default function ConvertPopup(props) {
       index++;
       if(!selectedSpotifyTracks[index])
         continue;
-      const error = await convertOne(track, ytPlaylistID, youtube_access_token.substring(21));
-      if (error) {
-        tracks.push(track);
-        console.log(spotifyPlaylist);
-        if (error === "search error: id is -1")
-          console.log(`error with searching yt video for ${track}`);
-        if (tracks.length === numErrors || error === "quota error") {//stop loop from running
-          setHeader((error === "quota error")
-            ? <h3>Quota Exceeded, tracks remaining:</h3>
-            : <h3>Error, conversion stopped, tracks remaining:</h3>);
-          setTrackList(tracks);
-          setFooter(<><h4>JSON format:</h4><code>{JSON.stringify(spotifyPlaylist)}</code></>);
-          break;
-        }
-        numErrors++;
-      } else {
+      try {
+        await convertOne(track, ytPlaylistID, youtube_access_token.substring(21));
         fetch(`${path}youtube/quota?cost=50`,{method:"POST"});
         currentQuota-=50;
         setQuota(currentQuota);
         finished.push(track);
         setTrackList([...finished]);
+      } catch ({message}) {
+        numErrors++;
+        tracks.push(track);
+        console.log(spotifyPlaylist);
+        if (message === "search error: id is -1")
+          console.log(`error with searching yt video for ${track}`);
+        console.log(tracks,numErrors);
+        if (tracks.length === numErrors || message === "quota error") {//stop loop from running
+          setHeader((message === "quota error")
+            ? <h3>Quota Exceeded, tracks remaining:</h3>
+            : <h4>Error, conversion stopped, tracks remaining:</h4>);
+          setTrackList(tracks);
+          setFooter(<><h4>JSON format:</h4><code>{JSON.stringify(spotifyPlaylist)}</code></>);
+          break;
+        }
       }
-
     }
     setHeader(<h3>Done!</h3>);
     setFooter(<>
       <a className="small-link youtube-colors" target="_blank" rel="noopener noreferrer" href={`https://www.youtube.com/playlist?list=${ytPlaylistID}`}>Link to Playlist</a><br></br>
       <a className="small-link white-background" href="/">Convert Another</a>
+      {tracks.length>0&&<>
+        <h4>Tracks unable to be converted:</h4>
+        <h5>JSON format:</h5>
+        <code>{JSON.stringify(spotifyPlaylist)}</code>
+      </>}
     </>);
 
     console.log(tracks, ytPlaylistID, spotifyPlaylist);
@@ -59,7 +64,7 @@ export default function ConvertPopup(props) {
   async function convertOne(track, ytPlaylistID, token) {
     const { id: vidID } = await fetch(`${path}youtube/search?term=${track}`).then(res => res.json());
     if (vidID === -1)
-      return "search error: id is -1";
+      throw Error("search error: id is -1");
     const options2 = {
       headers: {
         Authorization: `Bearer ${token}`
@@ -78,9 +83,9 @@ export default function ConvertPopup(props) {
     const insertres = await fetch("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet", options2).then(res => res.json());//insert track into playlist
     if (insertres.error) {
       if (insertres.error.message.includes("exceeded")) {
-        return "quota error";
+        throw Error("quota error");
       } else {
-        return insertres.error.message;
+        throw Error(insertres.error.message);
       }
     }
     console.log(insertres);
